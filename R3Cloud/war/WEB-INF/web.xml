@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns="http://java.sun.com/xml/ns/javaee"
+xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
+
+    <welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+	</welcome-file-list>
+	<servlet>
+	   
+	    <servlet-name>createPaper</servlet-name>
+        <servlet-class>r3cloud.PaperServlet</servlet-class>
+		<servlet-name>R3Cloud</servlet-name>
+		<servlet-class>r3cloud.R3CloudServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+	
+	    <servlet-name>createPaper</servlet-name>
+		<url-pattern>/createPaper</url-pattern>
+		<servlet-name>R3Cloud</servlet-name>
+		<url-pattern>/r3cloud</url-pattern>
+	</servlet-mapping>
+	
+	
+	<filter>
+        <filter-name>ObjectifyFilter</filter-name>
+        <filter-class>com.googlecode.objectify.ObjectifyFilter</filter-class>
+	</filter>
+ <filter-mapping>
+        <filter-name>ObjectifyFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+</filter-mapping> 
+
+</web-app>
