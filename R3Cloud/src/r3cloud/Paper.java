@@ -57,10 +57,12 @@ public class Paper {
 		String date = df.format(now);
 		this.date = date;
 		this.text = text;
-		if (text)
+		if (text){
 			this.content = content;
-		else
+		}
+		else{
 			this.url = url;
+		}
 		this.abstractPaper = abstractPaper;
 		this.owner = owner;
 		this.topic = topic;
