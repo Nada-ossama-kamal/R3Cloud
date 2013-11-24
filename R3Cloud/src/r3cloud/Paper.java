@@ -63,6 +63,7 @@ public class Paper {
 		else{
 			this.url = url;
 		}
+		
 		this.abstractPaper = abstractPaper;
 		this.owner = owner;
 		this.topic = topic;
