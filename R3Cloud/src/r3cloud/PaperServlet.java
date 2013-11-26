@@ -41,11 +41,11 @@ public class PaperServlet extends HttpServlet{
                 throws IOException {
         UserService userService = UserServiceFactory.getUserService();
         User googleUser = userService.getCurrentUser();
-        
+        System.out.println("WASLAA");
         BlobstoreService blobstoreService =  BlobstoreServiceFactory.getBlobstoreService();
 		Map<String, BlobKey> blobs = blobstoreService.getUploadedBlobs(req);
 		BlobKey blobKey = blobs.get("myFile");
-		System.out.print(blobKey);
+		System.out.print(blobKey+">>>>>>>>>>>>>>>>>>>>");
 		
         r3cloud.User r3User = r3cloud.User.createUser(googleUser.getUserId(), googleUser.getNickname());
         String title = req.getParameter("title");
@@ -59,13 +59,33 @@ public class PaperServlet extends HttpServlet{
         for(int i = 0; i<keywords.length; i++){
         	System.out.println(keywords[i]);
         }
-      
-       Paper paper = Paper.createPaper(title,isText, url, blobKey, abstractPaper, userKey, "Trial", keywords, new ArrayList<Key<Author>>());
-     
+        
+        String topic = req.getParameter("topic");
+        String[] authorTitle = req.getParameterValues("AuthorTitle");
+        String[] fNames = req.getParameterValues("AuthorFirstName");
+        String[] lName = req.getParameterValues("AuthorLastName");
+        String[] affiliation = req.getParameterValues("Affiliation");
+        ArrayList<Key<Author>> authors = PaperServlet.createAuthors(authorTitle, fNames, lName, affiliation);
+        System.out.println("WASLAA");
+        
+       Paper paper = Paper.createPaper(title,isText, url, blobKey, abstractPaper, userKey, topic, keywords, authors);
+       
         
         
 
         resp.sendRedirect("/viewAllPapers.jsp");
     }
+	
+	
+	private static ArrayList<Key<Author>> createAuthors(String[] authorTitle, String[] fNames, String[] lName, String[] affiliation){
+		ArrayList<Key<Author>> authors= new ArrayList<Key<Author>>();
+		
+		for(int i=0; i< authorTitle.length; i++){
+			Author author = Author.createAuthor(fNames[i], lName[i], authorTitle[i], affiliation[i]);
+			authors.add(author.getKey());
+		}
+		
+		return authors;
+	}
 
 }

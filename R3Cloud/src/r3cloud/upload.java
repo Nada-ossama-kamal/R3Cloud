@@ -16,6 +16,16 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.googlecode.objectify.Key;
 
+import java.io.IOException;
+
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+ 
+import com.google.appengine.api.blobstore.BlobKey;
+import com.google.appengine.api.blobstore.BlobstoreService;
+import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
+ 
 public class upload extends HttpServlet{
 	
 	@Override
@@ -29,7 +39,7 @@ public class upload extends HttpServlet{
 			System.out.print("Error");
 		    resp.sendRedirect("/");
 		} else {
-			System.out.print(blobKey);
+			System.out.print(blobKey+"hehehrr");
 		    resp.sendRedirect("/");
 		}
     }

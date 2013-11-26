@@ -130,6 +130,19 @@ public class Paper {
 	public void setTopic(String topic) {
 		this.topic = topic;
 	}
+	
+	public static Paper setTopicByID(Long id, String topic) {
+		Paper paper = Paper.loadPaperById(id);
+		
+		
+		ofy().load().type(Paper.class).id(id).getKey();
+		paper.setTopic(topic);
+		com.google.appengine.api.datastore.Entity paperEntity = ofy().toEntity(paper);
+		paperEntity.setProperty("topic",topic);
+		ofy().save().entities(paperEntity);
+		
+		return paper;
+	}
 
 	public void setKeywords(String[] keywords) {
 		this.keywords = keywords;
@@ -154,10 +167,61 @@ public class Paper {
 		
 	}
 	
+	public static Paper loadPaperById(Long id){
+		
+		Paper paper = ofy().load().type(Paper.class).id(id).get();
+		return paper;
+	}
+	public Long getId() {
+		return id;
+	}
+
+	public String getDate() {
+		return date;
+	}
+
+	public boolean isText() {
+		return text;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public BlobKey getContent() {
+		return content;
+	}
+
+	public String getAbstractPaper() {
+		return abstractPaper;
+	}
+
+	public Key<User> getOwner() {
+		return owner;
+	}
+
+	public String getTopic() {
+		return topic;
+	}
+
+	public String[] getKeywords() {
+		return keywords;
+	}
+
+	public List<Key<Author>> getAuthors() {
+		return authors;
+	}
+
+	public String getLastUpdatedDate() {
+		return lastUpdatedDate;
+	}
+
 	public static List<Paper> loadTopic(String topic){
 		List<Paper> papers = ofy().load().type(Paper.class).filter("topic", topic).list();
 		return papers;
 	}
+	
+	 
 
 	
 	

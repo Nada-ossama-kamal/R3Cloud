@@ -56,7 +56,7 @@
 
 
 
-	<form action="<%= blobstoreService.createUploadUrl("/createPaper") %>" method="post" enctype="multipart/form-data" name="createPaperForm">
+ 	<form action="<%= blobstoreService.createUploadUrl("/createPaper") %>" method="post" enctype="multipart/form-data" name="createPaperForm">
 	    <label for="titleLabel">Paper title</label>
 	    <input type="text" name="title"><br> 
 			 
@@ -77,15 +77,27 @@
 		<label for="addKeyword">Add Keyword</label>
 		<INPUT type="button" value="Add Keyword" onclick="add()"/>
   		<span id="addKeyWords" name="keywords" >&nbsp;</span><br>
-
+		
+		<label for="chooseTopic">Choose Topic</label>
+		<select name="topic">
+        <option value="Biology">Biology</option>
+  		<option value="Chemistry">Chemistry</option>
+  		<option value="Physics">Physics</option>
+  		<option value="Mathematics">Mathematics</option>
+  		<option value="Computer Science">Computer Science</option>
+		</select><br>
+		
+		<label for="addAuthor">Add Author</label>
+		<INPUT type="button" value="Add Author" onclick="add2()"/><br>
+  		<span id="addAuthors" name="authors" >&nbsp;</span><br>
 
 		<input type="submit" value="Create paper" />
-	</form>
+	</form> 
 	
-	<%-- <form action="<%= blobstoreService.createUploadUrl("/upload") %>" method="post" enctype="multipart/form-data">
+<%-- 	<form action="<%= blobstoreService.createUploadUrl("/upload") %>" method="post" enctype="multipart/form-data">
         <input type="file" name="myFile">
         <input type="submit" value="Submit">
-    </form> --%>
+    </form>  --%>
     
 
 	<%
@@ -110,6 +122,44 @@ function add() {
  
     //Append the element in page (in span).
     addKeyWords.appendChild(element);
+ 
+}
+function add2() {
+	 
+    //Create an input type dynamically.
+    
+    var title = document.createElement("input");
+    title.setAttribute("type", "text");
+    title.setAttribute("value", "Author's title");
+    title.setAttribute("name", "AuthorTitle");
+    
+    var fName = document.createElement("input");
+    fName.setAttribute("type", "text");
+    fName.setAttribute("value", "Author's first name");
+    fName.setAttribute("name", "AuthorFirstName");
+    
+    var lName = document.createElement("input");
+    lName.setAttribute("type", "text");
+    lName.setAttribute("value", "Author's last name");
+    lName.setAttribute("name", "AuthorLastName");
+    
+    var affiliation = document.createElement("input");
+    affiliation.setAttribute("type", "text");
+    affiliation.setAttribute("value", "Author's Affiliation");
+    affiliation.setAttribute("name", "Affiliation");
+ 	
+    var lineBreak = document.createElement ("br");
+ 
+    var addAuthors = document.getElementById("addAuthors");
+ 
+    //Append the element in page (in span).
+    addAuthors.appendChild(title);
+    addAuthors.appendChild(fName);
+    addAuthors.appendChild(lName);
+    addAuthors.appendChild(affiliation);
+    addAuthors.appendChild(lineBreak);
+   
+    
  
 }
 </SCRIPT>

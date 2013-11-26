@@ -43,8 +43,7 @@
 	%>
 	       <p>
 		    Hello, ${fn:escapeXml(user.nickname)}! (You can <a
-			href="<%=userService.createLogoutURL(request.getRequestURI())%>">sign
-			out</a>.)
+			href="<%=userService.createLogoutURL(request.getRequestURI())%>">sign out</a>.)
 	        </p>
 
 
@@ -54,19 +53,20 @@
 		  <%
 		  List<Paper> papers = Paper.loadAll();
 		   for (Paper paper : papers) {
-
-				pageContext.setAttribute("paper", paper.getTitle());
+			    Long paperId = paper.getKey().getId();
+				pageContext.setAttribute("id", paperId);
+				pageContext.setAttribute("title", paper.getTitle());
 		  %>
 				<tr>
-				<td>${fn:escapeXml(paper)}</td>
+				<td><a href="/viewPaper.jsp?id=<%=paper.getId()%>">${fn:escapeXml(title)}</a></td>
 				</tr>
 				<br>
-
-		</table>
+</table>
+		
 		<%
 			}
 		%>
-
+		
 
 	<%
 		}
