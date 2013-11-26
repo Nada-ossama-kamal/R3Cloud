@@ -20,7 +20,7 @@ import com.google.appengine.api.users.UserServiceFactory;
 import com.googlecode.objectify.Key;
 
 public class viewPaperServlet extends HttpServlet{
-	//private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+	// private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
 	
 	@Override
     public void doPost(HttpServletRequest req, HttpServletResponse resp)
