@@ -1,6 +1,12 @@
 package r3cloud;
 
 import static r3cloud.OfyService.ofy;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
@@ -26,7 +32,7 @@ public class Author {
 		this.affiliation = affiliation;
 	}
 
-	public Author createAuthor(String firstName, String lastName, String title,
+	public static Author createAuthor(String firstName, String lastName, String title,
 			String affiliation) {
 
 		Author author = new Author(firstName, lastName, title, affiliation);
@@ -73,6 +79,14 @@ public class Author {
 	public Key<Author> getKey() {
 		Key<Author> authorKey = Key.create(Author.class, this.id);
 		return authorKey;
+	}
+	
+	public static List<Author> getAuthorsByKey(List<Key<Author>> authorKeys){
+		Collection<Author> authorsCollection =  ofy().load().keys(authorKeys).values();
+		ArrayList<Author> authors = new ArrayList<Author>(authorsCollection);
+		return authors;
+		
+		
 	}
 
 }
