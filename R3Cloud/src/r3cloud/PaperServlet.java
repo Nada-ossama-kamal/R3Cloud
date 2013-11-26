@@ -42,20 +42,22 @@ public class PaperServlet extends HttpServlet{
         UserService userService = UserServiceFactory.getUserService();
         User googleUser = userService.getCurrentUser();
         System.out.println("WASLAA");
-        BlobstoreService blobstoreService =  BlobstoreServiceFactory.getBlobstoreService();
-		Map<String, BlobKey> blobs = blobstoreService.getUploadedBlobs(req);
-		BlobKey blobKey = blobs.get("myFile");
-		System.out.print(blobKey+">>>>>>>>>>>>>>>>>>>>");
-		
+//        BlobstoreService blobstoreService =  BlobstoreServiceFactory.getBlobstoreService();
+//		Map<String, BlobKey> blobs = blobstoreService.getUploadedBlobs(req);
+//		BlobKey blobKey = blobs.get("myFile");
+//		System.out.print(blobKey+">>>>>>>>>>>>>>>>>>>>");
+		BlobKey blobKey = new BlobKey("");
         r3cloud.User r3User = r3cloud.User.createUser(googleUser.getUserId(), googleUser.getNickname());
         String title = req.getParameter("title");
         System.out.println(title+"Title");
         String abstractPaper = req.getParameter("abstract");
         //final Part filePart = request.getPart("file");
         Key<r3cloud.User> userKey = Key.create(r3cloud.User.class, r3User.firstName);
-        boolean isText = (req.getParameter("text").equals("true"));
+        //boolean isText = (req.getParameter("text").equals("true"));
+        boolean isText = false;
         String url = req.getParameter("insertedURL");
         String[] keywords = req.getParameterValues("keyword");
+        
         for(int i = 0; i<keywords.length; i++){
         	System.out.println(keywords[i]);
         }

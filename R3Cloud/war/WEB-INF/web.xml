@@ -9,32 +9,50 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
 	<servlet>
-	    <servlet-name>EditPaperServlet</servlet-name>
+        <servlet-name>EditPaperServlet</servlet-name>
         <servlet-class>r3cloud.EditPaperServlet</servlet-class>
-        
-	    <servlet-name>createPaper</servlet-name>
+     </servlet>
+     
+	<servlet>
+        <servlet-name>createPaper</servlet-name>
         <servlet-class>r3cloud.PaperServlet</servlet-class>
-        
+     </servlet>
+     
+	<servlet>
 		<servlet-name>serve</servlet-name>
         <servlet-class>r3cloud.viewPaperServlet</servlet-class>
-
+     </servlet>
+     
+	<servlet>
         <servlet-name>upload</servlet-name>
         <servlet-class>r3cloud.upload</servlet-class>
+     </servlet>
+     <servlet>
 		<servlet-name>R3Cloud</servlet-name>
 		<servlet-class>r3cloud.R3CloudServlet</servlet-class>
-	</servlet>
+	 </servlet>
+	
 	<servlet-mapping>
-	     
 	     <servlet-name>EditPaperServlet</servlet-name>
 		<url-pattern>/editpaper</url-pattern>
-		
-	      <servlet-name>createPaper</servlet-name>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>createPaper</servlet-name>
 		<url-pattern>/createPaper</url-pattern>
-	   
+	</servlet-mapping>	
+	
+	 <servlet-mapping> 
 	  <servlet-name>serve</servlet-name>
 		<url-pattern>/serve</url-pattern>
+	</servlet-mapping>	
+	
+	<servlet-mapping>
 		 <servlet-name>upload</servlet-name>
 		<url-pattern>/upload</url-pattern>
+	</servlet-mapping>	
+	
+	<servlet-mapping>
 		<servlet-name>R3Cloud</servlet-name>
 		<url-pattern>/r3cloud</url-pattern>
 	</servlet-mapping>

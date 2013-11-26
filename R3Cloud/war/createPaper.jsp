@@ -56,23 +56,24 @@
 
 
 
- 	<form action="<%= blobstoreService.createUploadUrl("/createPaper") %>" method="post" enctype="multipart/form-data" name="createPaperForm">
+<%--  	<form action="<%= blobstoreService.createUploadUrl("/createPaper") %>" method="post" enctype="multipart/form-data" name="createPaperForm"> --%>
+ 	<form action="/createPaper" method="post" name="createPaperForm">
 	    <label for="titleLabel">Paper title</label>
 	    <input type="text" name="title"><br> 
 			 
 	    <label for="abstractLabel">Paper abstract</label><br> 
 	    <textarea id="abstract" name="abstract" rows="10" cols="70"></textarea> <br>
 	
-		<label for="url">Insert paper url</label>
-	  	<input type="radio" name="text" id="url" value="false"><br>
-	  	<label for="text">Upload paper text</label>
-	  	<input type="radio" name="text" id="text" value="true"><br>
+<!-- 		<label for="url">Insert paper url</label> -->
+<!-- 	  	<input type="radio" name="text" id="url" value="false"><br> -->
+<!-- 	  	<label for="text">Upload paper text</label> -->
+<!-- 	  	<input type="radio" name="text" id="text" value="true"><br> -->
 	  	
 	  	<label for="insertUrl">Paper url</label>
 	  	<input type="text" name="insertedURL"><br> 
 	  	
-	  	<label for="chooseFile">Specify file(s) to upload</label>
-		<input type="file" name="myFile"><br>
+<!-- 	  	<label for="chooseFile">Specify file(s) to upload</label> -->
+<!-- 		<input type="file" name="myFile"><br> -->
 		
 		<label for="addKeyword">Add Keyword</label>
 		<INPUT type="button" value="Add Keyword" onclick="add()"/>

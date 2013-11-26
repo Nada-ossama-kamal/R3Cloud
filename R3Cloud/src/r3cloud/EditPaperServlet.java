@@ -14,7 +14,7 @@ public class EditPaperServlet extends HttpServlet{
 		
 		Long paperID = Long.parseLong(req.getParameter("paperID"));
 		String changedItem = req.getParameter("changed");
-		
+		System.out.println("Edit");
 		if(changedItem.equalsIgnoreCase("topic")){
 			String topic = req.getParameter("topic");
 			Paper.setTopicByID(paperID, topic);
