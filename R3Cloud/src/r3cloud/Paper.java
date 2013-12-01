@@ -143,6 +143,18 @@ public class Paper {
 		
 		return paper;
 	}
+	public static Paper setTitleByID(Long id, String title) {
+		Paper paper = Paper.loadPaperById(id);
+		
+		
+		ofy().load().type(Paper.class).id(id).getKey();
+		paper.setTitle(title);
+		com.google.appengine.api.datastore.Entity paperEntity = ofy().toEntity(paper);
+		paperEntity.setProperty("title",title);
+		ofy().save().entities(paperEntity);
+		
+		return paper;
+	}
 
 	public void setKeywords(String[] keywords) {
 		this.keywords = keywords;

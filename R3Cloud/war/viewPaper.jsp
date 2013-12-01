@@ -60,8 +60,16 @@
 		<div>
 		<fieldset>
   		<legend>Paper title:</legend>
+  		<form action="/editpaper" method="post">
+  		<span id="topicDiv">
 	    <!-- <label for="titleLabel">Paper title</label> -->
-	    <input type="text" name="title" value="<%= paper.getTitle() %>" disabled><br> 
+	    <input type="submit" name= "saveTitle" id="saveTitle" value="save" onclick="saveTitle()" disabled/>&nbsp;&nbsp;&nbsp;&nbsp;
+	    <input type="text" name="title" id="title" value="<%= paper.getTitle() %>" disabled>&nbsp;&nbsp;&nbsp;&nbsp;
+	    <input type="hidden" name="changed" value="title"/>
+	    <input type="hidden" name="paperID" value="<%= paper.getId() %>"/>
+	    </span>
+	    </form>
+	    <input type="button" name= "editTitle" id="editTitle"  value="edit" onclick="editTitle()"/><br>
 	    </fieldset>
 	    </div>
 		
@@ -179,6 +187,15 @@
 </body>
 
 <SCRIPT language="javascript">
+function editTitle(){
+	var elem = document.getElementById('saveTitle');
+	elem.disabled = false;
+	var elem = document.getElementById('editTitle');
+	elem.disabled = true;
+	var elem = document.getElementById('title');
+	elem.disabled = false;
+	
+}
 function editTopic() {
 	
 	var elem = document.getElementById('saveTopic');
