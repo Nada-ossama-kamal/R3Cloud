@@ -155,6 +155,20 @@ public class Paper {
 		
 		return paper;
 	}
+	
+	public static Paper setAbstractByID(Long id, String abs) {
+		Paper paper = Paper.loadPaperById(id);
+		ofy().load().type(Paper.class).id(id).getKey();
+		paper.setAbstractPaper(abs);
+		com.google.appengine.api.datastore.Entity paperEntity = ofy().toEntity(paper);
+		paperEntity.setProperty("abstractPaper",abs);
+		ofy().save().entities(paperEntity);
+		
+		return paper;
+	}
+
+	
+	
 
 	public void setKeywords(String[] keywords) {
 		this.keywords = keywords;

@@ -61,7 +61,7 @@
 		<fieldset>
   		<legend>Paper title:</legend>
   		<form action="/editpaper" method="post">
-  		<span id="topicDiv">
+  		<span id="titleDiv">
 	    <!-- <label for="titleLabel">Paper title</label> -->
 	    <input type="submit" name= "saveTitle" id="saveTitle" value="save" onclick="saveTitle()" disabled/>&nbsp;&nbsp;&nbsp;&nbsp;
 	    <input type="text" name="title" id="title" value="<%= paper.getTitle() %>" disabled>&nbsp;&nbsp;&nbsp;&nbsp;
@@ -76,8 +76,17 @@
 		<div>
 		<fieldset>
   		<legend>Paper abstract:</legend>
+  		<form action="/editpaper" method="post">
+  		<span id="abstractDiv">
 <!-- 	    <label for="abstractLabel">Paper abstract</label><br>  -->
-	    <textarea id="abstract" name="abstract" rows="10" cols="70" disabled> <%= paper.getAbstractPaper() %></textarea> <br>
+		<input type="submit" name= "saveAbstract" id="saveAbstract" value="save" disabled/>&nbsp;&nbsp;&nbsp;&nbsp;
+	    <textarea id="abstract" name="abstract" rows="10" cols="70" disabled> <%= paper.getAbstractPaper() %></textarea>
+	    	    <input type="hidden" name="changed" value="abstract"/>
+	    <input type="hidden" name="paperID" value="<%= paper.getId() %>"/>
+	    </span>
+	    </form>
+	    <input type="button" name= "editAbstract" id="editAbstract"  value="edit" onclick="editAbstract()"/><br>
+	    
 	    </fieldset>
 	    </div>
 	
@@ -106,8 +115,6 @@
  		<fieldset>
  		<legend>Keywords:</legend>
 <!--  		<label for="Keyword">Keywords:</label> -->
- 		<table>
-		<tr>
 		<%
 		String[] keywords = paper.getKeywords();
 		if(keywords.length == 0){
@@ -116,17 +123,25 @@
 		<%
 		}
 		else{
+			int i=0;
 			for(String keyword : keywords){
 				pageContext.setAttribute("keyword", keyword);
+				i++;
 			%>	
 	<%-- 				<td>${fn:escapeXml(keyword)}</td> --%>
-					<td><input type="text" name="topic" value="<%= keyword%>" disabled></td>
+					<input type="text" name="keyword" value="<%= keyword%>" disabled>
+					<%if(i%9==0){
+					%>
+					<br>
+					<%
+					}
+					%>
+					
 			<%	
 			}
 		}
 		%>
-		</tr>
-		</table>
+		
 		</fieldset>
 		</div>
 		
@@ -196,6 +211,17 @@ function editTitle(){
 	elem.disabled = false;
 	
 }
+
+function editAbstract(){
+	var elem = document.getElementById('saveAbstract');
+	elem.disabled = false;
+	var elem = document.getElementById('editAbstract');
+	elem.disabled = true;
+	var elem = document.getElementById('abstract');
+	elem.disabled = false;
+	
+}
+
 function editTopic() {
 	
 	var elem = document.getElementById('saveTopic');
