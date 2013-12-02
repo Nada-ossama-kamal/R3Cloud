@@ -23,10 +23,15 @@ public class EditPaperServlet extends HttpServlet{
 		}else if(changedItem.equalsIgnoreCase("abstract")){
 			String abs = req.getParameter("abstract");
 			Paper.setAbstractByID(paperID, abs);
+		}else if(changedItem.equalsIgnoreCase("delete")){
+			Paper.deletePaperByID(paperID);
 		}
 		
-		System.out.println("GAT");
+		if(changedItem.equalsIgnoreCase("delete")){
+			resp.sendRedirect("/viewAllPapers.jsp");
+		}else{
+			System.out.println(changedItem+"***");
 		resp.sendRedirect("/viewPaper.jsp?id=" + paperID);
-		
+		}
 	}
 }

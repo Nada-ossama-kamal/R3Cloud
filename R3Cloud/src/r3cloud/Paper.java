@@ -13,6 +13,8 @@ import java.util.List;
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.datastore.QueryResultIterable;
 import com.googlecode.objectify.Key;
+import com.googlecode.objectify.ObjectifyFactory;
+import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
@@ -77,7 +79,14 @@ public class Paper {
 		Paper paper = new Paper(title, text, url, content, abstractPaper,
 				owner, topic, keywords, authors);
 		ofy().save().entity(paper).now();
+		
+		
+		
 		return paper;
+	}
+	
+	public static void deletePaperByID(Long id){
+		ofy().delete().type(Paper.class).id(id).now();
 	}
 	
 

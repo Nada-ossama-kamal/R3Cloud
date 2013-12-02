@@ -196,7 +196,17 @@
 		</div>
 	
 	<%
-		}
+	if(paper.getOwner().equals(Key.create(r3cloud.User.class, user.getNickname()))){
+	%>
+		<form action="/editpaper" method="post">
+		<input Onclick="return ConfirmDelete();" type="submit" name="actiondelete" value="Delete">
+		<input type="hidden" name="changed" value="delete"/>
+	    <input type="hidden" name="paperID" value="<%= paper.getId() %>"/>
+		
+		</form>
+	<%
+	}
+ }
 	%>
 
 </body>
@@ -210,7 +220,7 @@ function editTitle(){
 	var elem = document.getElementById('title');
 	elem.disabled = false;
 	
-}
+};
 
 function editAbstract(){
 	var elem = document.getElementById('saveAbstract');
@@ -220,7 +230,7 @@ function editAbstract(){
 	var elem = document.getElementById('abstract');
 	elem.disabled = false;
 	
-}
+};
 
 function editTopic() {
 	
@@ -262,10 +272,14 @@ function editTopic() {
     element2.add(option5, null);
     
     parent.appendChild(element2);
-	
-	
-	
-   
+};
+function ConfirmDelete(){
+  var x = confirm("Are you sure you want to delete?");
+  if (x)
+      return true;
+  else
+    return false;
 }
+
 </SCRIPT>
 </html>
