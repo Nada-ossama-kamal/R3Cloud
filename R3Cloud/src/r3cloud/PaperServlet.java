@@ -41,20 +41,20 @@ public class PaperServlet extends HttpServlet{
                 throws IOException {
         UserService userService = UserServiceFactory.getUserService();
         User googleUser = userService.getCurrentUser();
-        System.out.println("WASLAA");
-//        BlobstoreService blobstoreService =  BlobstoreServiceFactory.getBlobstoreService();
-//		Map<String, BlobKey> blobs = blobstoreService.getUploadedBlobs(req);
-//		BlobKey blobKey = blobs.get("myFile");
-//		System.out.print(blobKey+">>>>>>>>>>>>>>>>>>>>");
-		BlobKey blobKey = new BlobKey("");
+      
+        BlobstoreService blobstoreService =  BlobstoreServiceFactory.getBlobstoreService();
+		Map<String, BlobKey> blobs = blobstoreService.getUploadedBlobs(req);
+		BlobKey blobKey = blobs.get("myFile");
+		System.out.print(blobKey+">>>>>>>>>>>>>>>>>>>>");
+	
         r3cloud.User r3User = r3cloud.User.createUser(googleUser.getUserId(), googleUser.getNickname());
         String title = req.getParameter("title");
         System.out.println(title+"Title");
         String abstractPaper = req.getParameter("abstract");
         //final Part filePart = request.getPart("file");
         Key<r3cloud.User> userKey = Key.create(r3cloud.User.class, r3User.firstName);
-        //boolean isText = (req.getParameter("text").equals("true"));
-        boolean isText = false;
+        boolean isText = (req.getParameter("text").equals("true"));
+        //boolean isText = false;
         String url = req.getParameter("insertedURL");
         String[] keywords = req.getParameterValues("keyword");
         

@@ -40,7 +40,7 @@ public class upload extends HttpServlet{
 		    resp.sendRedirect("/");
 		} else {
 			System.out.print(blobKey+"hehehrr");
-		    resp.sendRedirect("/");
+			resp.sendRedirect("/serve?blob-key=" + blobKey.getKeyString());
 		}
     }
 

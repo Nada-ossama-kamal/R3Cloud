@@ -56,30 +56,52 @@
 
 
 
-<%--  	<form action="<%= blobstoreService.createUploadUrl("/createPaper") %>" method="post" enctype="multipart/form-data" name="createPaperForm"> --%>
- 	<form action="/createPaper" method="post" name="createPaperForm">
-	    <label for="titleLabel">Paper title</label>
+<%-- 	  	<form action="<%= blobstoreService.createUploadUrl("/upload") %>" method="post" enctype="multipart/form-data" name="createPaperForm"> --%>
+ 	  	<form action="<%= blobstoreService.createUploadUrl("/createPaper") %>" method="post" enctype="multipart/form-data" name="createPaperForm">
+<!--  	<form action="/createPaper" method="post" name="createPaperForm"> -->
+
+
+		<div>
+		<fieldset>
+	    <legend><label for="titleLabel">Paper title</label></legend>
 	    <input type="text" name="title"><br> 
-			 
-	    <label for="abstractLabel">Paper abstract</label><br> 
+	    </fieldset>
+		</div>
+		 
+		 <div>
+		 <fieldset>
+	    <legend><label for="abstractLabel">Paper abstract</label></legend>
 	    <textarea id="abstract" name="abstract" rows="10" cols="70"></textarea> <br>
-	
-<!-- 		<label for="url">Insert paper url</label> -->
-<!-- 	  	<input type="radio" name="text" id="url" value="false"><br> -->
-<!-- 	  	<label for="text">Upload paper text</label> -->
-<!-- 	  	<input type="radio" name="text" id="text" value="true"><br> -->
+	    </fieldset>
+		</div>
+		
+		<div>
+		<fieldset>
+	    <legend><label for="paper">Paper</label></legend>
+		<label for="url">Insert paper url</label>
+	  	<input type="radio" name="text" id="url" value="false" onchange="urlSelected()"><br>
+	  	<label for="text">Upload paper text</label>
+	  	<input type="radio" name="text" id="text" value="true" onchange="textSelected()"><br>
 	  	
 	  	<label for="insertUrl">Paper url</label>
-	  	<input type="text" name="insertedURL"><br> 
+	  	<input type="text" name="insertedURL" id="insertedURL"  disabled><br> 
 	  	
-<!-- 	  	<label for="chooseFile">Specify file(s) to upload</label> -->
-<!-- 		<input type="file" name="myFile"><br> -->
+	  	<label for="chooseFile">Specify file(s) to upload</label>
+		<input type="file" name="myFile" id= "myFile" disabled><br>
+		</fieldset>
+		</div>
 		
-		<label for="addKeyword">Add Keyword</label>
+		<div>
+		<fieldset>
+	    <legend><label for="addKeyword">Add Keyword</label></legend>
 		<INPUT type="button" value="Add Keyword" onclick="add()"/>
   		<span id="addKeyWords" name="keywords" >&nbsp;</span><br>
+  		</fieldset>
+		</div>
 		
-		<label for="chooseTopic">Choose Topic</label>
+		<div>
+		<fieldset>
+	    <legend><label for="chooseTopic">Choose Topic</label></legend>
 		<select name="topic">
         <option value="Biology">Biology</option>
   		<option value="Chemistry">Chemistry</option>
@@ -87,11 +109,16 @@
   		<option value="Mathematics">Mathematics</option>
   		<option value="Computer Science">Computer Science</option>
 		</select><br>
+		</fieldset>
+		</div>
 		
-		<label for="addAuthor">Add Author</label>
+		<div>
+		<fieldset>
+	    <legend><label for="addAuthor">Add Author</label></legend>
 		<INPUT type="button" value="Add Author" onclick="add2()"/><br>
-  		<span id="addAuthors" name="authors" >&nbsp;</span><br>
-
+  		<span id="addAuthors" name="authors" ></span><br>
+  		</fieldset>
+		</div>
 		<input type="submit" value="Create paper" />
 	</form> 
 	
@@ -108,6 +135,19 @@
 
 
 <SCRIPT language="javascript">
+function textSelected(){
+	var text = document.getElementById("myFile");
+	var url = document.getElementById("insertedURL");
+	text.disabled = false;
+	url.disabled = true;
+	
+};
+function urlSelected(){
+	var text = document.getElementById("myFile");
+	var url = document.getElementById("insertedURL");
+	text.disabled = true;
+	url.disabled = false;
+};
 function add() {
  
     //Create an input type dynamically.

@@ -6,6 +6,7 @@ import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -18,6 +19,7 @@ import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
+import com.googlecode.objectify.annotation.Load;
 import com.googlecode.objectify.cmd.Query;
 
 @Entity
@@ -25,6 +27,7 @@ public class Paper {
 	@Id
 	Long id;
 	@Index
+	@Load
 	String title;
 	@Index
 	String date;
@@ -176,7 +179,17 @@ public class Paper {
 		return paper;
 	}
 
-	
+	public static Paper setKeywordsByID(Long id, String[] keywordsPaper){
+		Paper paper = Paper.loadPaperById(id);
+		ofy().load().type(Paper.class).id(id).getKey();
+		paper.setKeywords(keywordsPaper);
+		com.google.appengine.api.datastore.Entity paperEntity = ofy().toEntity(paper);
+		ArrayList<String> keywordsArray = new ArrayList<String>(Arrays.asList(keywordsPaper));
+		paperEntity.setProperty("keywords",keywordsArray);
+		ofy().save().entities(paperEntity);
+		
+		return paper;
+	}
 	
 
 	public void setKeywords(String[] keywords) {
@@ -197,7 +210,7 @@ public class Paper {
 	}
 	
 	public static List<Paper> loadAll(){
-	    List<Paper> papers = ofy().load().type(Paper.class).list();
+	    List<Paper> papers = ofy().load().type(Paper.class).order("title").list();
 		return papers;
 		
 	}
@@ -255,6 +268,21 @@ public class Paper {
 		List<Paper> papers = ofy().load().type(Paper.class).filter("topic", topic).list();
 		return papers;
 	}
+	
+	
+	public static List<String> getAllTopics(){
+		List<Paper> papers = ofy().load().type(Paper.class).list();
+		List<String> topics = new ArrayList<String>();
+		for(Paper paper:papers){
+			String topic = paper.topic;
+			if(!topics.contains(topic)){
+				topics.add(topic);
+			}
+		}
+		return topics;
+	}
+	
+	
 	
 	 
 

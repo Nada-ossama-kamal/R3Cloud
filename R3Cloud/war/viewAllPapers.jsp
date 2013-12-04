@@ -40,36 +40,110 @@
 		} else {
 
 			pageContext.setAttribute("user", user);
+			String topic = request.getParameter("topic");
+			if(topic == null){
+				topic="All Papers";
+			}else if(topic.equalsIgnoreCase("biology")){
+				topic = "Biology";
+			}else if(topic.equalsIgnoreCase("chemistry")){
+				topic = "Chemistry";
+			}else if(topic.equalsIgnoreCase("physics")){
+				topic = "Physics";
+			}else if(topic.equalsIgnoreCase("maths")){
+				topic = "Mathematics";
+			}else if(topic.equalsIgnoreCase("cs")){
+				topic = "Computer Science";
+			}else if(topic.equalsIgnoreCase("none")){
+				topic = "All Papers";
+			}else{
+				topic = "All Papers";
+			}
 	%>
 	       <p>
 		    Hello, ${fn:escapeXml(user.nickname)}! (You can <a
 			href="<%=userService.createLogoutURL(request.getRequestURI())%>">sign out</a>.)
 	        </p>
+	        
+	        <div>
+	        <fieldset>
+	        <legend><label>Topics:</label></legend>
+	        <a href="/viewAllPapers.jsp?topic=biology">Biology</a>
+	        <a href="/viewAllPapers.jsp?topic=chemistry">Chemistry</a>
+	        <a href="/viewAllPapers.jsp?topic=physics">Physics</a>
+	        <a href="/viewAllPapers.jsp?topic=maths">Mathematics</a>
+	        <a href="/viewAllPapers.jsp?topic=cs">Computer Science</a>
+	        <a href="/viewAllPapers.jsp">All Papers</a>
+	        </fieldset>
+	        </div>
 
-
-	      <h4>All Papers:</h4>
-	      <table>
-
-		  <%
-		  List<Paper> papers = Paper.loadAll();
-		   for (Paper paper : papers) {
-			    Long paperId = paper.getKey().getId();
-				pageContext.setAttribute("id", paperId);
-				pageContext.setAttribute("title", paper.getTitle());
-		  %>
-				<tr>
-				<td><a href="/viewPaper.jsp?id=<%=paper.getId()%>">${fn:escapeXml(title)}</a></td>
-				</tr>
-				<br>
-</table>
-		
+		<div>
 		<%
-			}
+		if(topic.equals("Err")){
 		%>
-		
-
-	<%
+			<p><i>This topic does not exist !!</i></p>
+		   <% 
+		}else{
+			%>
+			
+			<fieldset>
+	 		<%
+			List<Paper> papers;
+			if(topic.equals("All Papers")){
+				papers = Paper.loadAll();
+				%><legend><label>All Papers: </label></legend><%
+			}else{
+				papers = Paper.loadTopic(topic);
+				pageContext.setAttribute("topic", topic);
+				
+				%><legend><label>${fn:escapeXml(topic)} Papers: </label></legend><%
+			}
+			
+		  	if(papers.size()==0){
+		  		%>
+		  		<p><i>No papers to display !!</i></p>
+		  		<%
+		  	}else{
+		  			%>
+		  		   <table>
+		  		   <%
+			     for(Paper paper : papers) {
+				    Long paperId = paper.getId();
+					pageContext.setAttribute("id", paperId);
+					pageContext.setAttribute("title", paper.getTitle());
+			 		 %>
+					<tr>
+					<td><a href="/viewPaper.jsp?id=<%=paper.getId()%>">${fn:escapeXml(title)}</a></td>
+					</tr>
+					</br>
+					</table>
+		<%
+					}
+		  	}
+		%>
+	 	</fieldset>
+	 	<%
+				
 		}
+	 	%>
+		</div>
+	<%
+	} //end else not signed in
 	%>
 </body>
+
+<SCRIPT language="javascript">
+function loadPaperTopic(topic){
+	var elem = document.getElementById('saveTitle');
+	elem.disabled = false;
+	var elem = document.getElementById('editTitle');
+	elem.disabled = true;
+	var elem = document.getElementById('title');
+	elem.disabled = false;
+	List<Paper> papers = Paper.
+	
+};
+
+
+
+</SCRIPT>
 </html>

@@ -1,10 +1,14 @@
 package r3cloud;
 
+import static com.googlecode.objectify.ObjectifyService.ofy;
+
 import java.io.IOException;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.googlecode.objectify.Key;
 
 public class EditPaperServlet extends HttpServlet{
 	
@@ -25,6 +29,9 @@ public class EditPaperServlet extends HttpServlet{
 			Paper.setAbstractByID(paperID, abs);
 		}else if(changedItem.equalsIgnoreCase("delete")){
 			Paper.deletePaperByID(paperID);
+		}else if(changedItem.equalsIgnoreCase("keywordss")){
+			String[] keywordsz = req.getParameterValues("keyword");
+			Paper.setKeywordsByID(paperID, keywordsz);
 		}
 		
 		if(changedItem.equalsIgnoreCase("delete")){

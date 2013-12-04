@@ -86,7 +86,8 @@ public class Author {
 		ArrayList<Author> authors = new ArrayList<Author>(authorsCollection);
 		return authors;
 		
-		
 	}
+	
+
 
 }

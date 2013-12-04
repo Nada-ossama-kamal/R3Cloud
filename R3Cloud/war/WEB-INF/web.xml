@@ -19,8 +19,8 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
      </servlet>
      
 	<servlet>
-		<servlet-name>serve</servlet-name>
-        <servlet-class>r3cloud.viewPaperServlet</servlet-class>
+		<servlet-name>Serve</servlet-name>
+        <servlet-class>r3cloud.Serve</servlet-class>
      </servlet>
      
 	<servlet>
@@ -43,7 +43,7 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	</servlet-mapping>	
 	
 	 <servlet-mapping> 
-	  <servlet-name>serve</servlet-name>
+	    <servlet-name>Serve</servlet-name>
 		<url-pattern>/serve</url-pattern>
 	</servlet-mapping>	
 	

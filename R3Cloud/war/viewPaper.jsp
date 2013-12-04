@@ -57,9 +57,9 @@
 			out</a>.)
 	</p>
 	
-		<div>
+		<div id="titleDiv">
 		<fieldset>
-  		<legend>Paper title:</legend>
+  		<legend><label>Paper title:</label></legend>
   		<form action="/editpaper" method="post">
   		<span id="titleDiv">
 	    <!-- <label for="titleLabel">Paper title</label> -->
@@ -73,9 +73,9 @@
 	    </fieldset>
 	    </div>
 		
-		<div>
+		<div id="abstractDiv">
 		<fieldset>
-  		<legend>Paper abstract:</legend>
+  		<legend><label>Paper abstract:</label></legend>
   		<form action="/editpaper" method="post">
   		<span id="abstractDiv">
 <!-- 	    <label for="abstractLabel">Paper abstract</label><br>  -->
@@ -89,19 +89,25 @@
 	    
 	    </fieldset>
 	    </div>
-	
+	    
+	    <div id="paperContent">
+	    <fieldset>
+  		<legend><label>Paper:</label></legend>
+	    
+	    <div id="textDiv">
  		<%
 		
 		if(paper.isText()){
-			pageContext.setAttribute("paper", paper.getContent());
+			pageContext.setAttribute("paper", paper.getContent().getKeyString());
 		%>
-		<form action="/serve" method="post">
-		<input type="text" name="insertedURL" value="<%= paper.getUrl() %>"><br>
-      <div><input type="submit" value="Download paper" /></div>
-
-   	  </form>
 		
-		<%--       <input type="hidden" name="blob-key" value="${fn:escapeXml(paper)}"/> --%>
+		<form action="/serve" method="get">
+      	<input type="submit" value="View paper" />
+		<input type="hidden" name="blob-key" value="${fn:escapeXml(paper)}"/>
+   	    </form>
+	    </div>
+	
+	 <div id="urlDiv">
 		<%
 		}else{
 			%>
@@ -110,44 +116,63 @@
 		<%
 		}
 		%>
- 	
- 		<div>
+ 	 </div>
+ 	 
+ 	 </fieldset>
+ 	 </div>
+ 	 
+ 	 
+ 		<div id="keywordsDiv">
  		<fieldset>
- 		<legend>Keywords:</legend>
-<!--  		<label for="Keyword">Keywords:</label> -->
+ 		<legend><label>Keywords Label:</label></legend>
 		<%
-		String[] keywords = paper.getKeywords();
-		if(keywords.length == 0){
+		String[] keywordz = paper.getKeywords();
+		if(keywordz.length == 0){
 		%>
 			<p><i>No keywords were specified</i></p>
 		<%
 		}
 		else{
+			%>
+			<form action="/editpaper" method="post">
+			<span id="keywordsSpan">
+			<%
 			int i=0;
-			for(String keyword : keywords){
-				pageContext.setAttribute("keyword", keyword);
-				i++;
+			for(String keyword : keywordz){
+				//pageContext.setAttribute("keyword", keyword);
+				String kwString = "keyword"+i;
+				pageContext.setAttribute("kwString", kwString);
+				String removeKW = "remove"+i;
+				pageContext.setAttribute("removeKW", removeKW);
+				pageContext.setAttribute("i", i);
+				
+				
 			%>	
 	<%-- 				<td>${fn:escapeXml(keyword)}</td> --%>
-					<input type="text" name="keyword" value="<%= keyword%>" disabled>
-					<%if(i%9==0){
-					%>
-					<br>
+					<input type="text" name="keyword" id="${fn:escapeXml(kwString)}" value="<%= keyword%>" disabled>
+					<input type="hidden" name="removeKW" id="${fn:escapeXml(removeKW)}" value="X" onclick="removeKeywords(${fn:escapeXml(i)})" disabled>
 					<%
-					}
-					%>
+					i++;
 					
-			<%	
+					
 			}
+			pageContext.setAttribute("i", i);
 		}
 		%>
-		
+		</span>
+		</br>
+		<input type="submit" name= "saveKW" id="saveKW" value="save" onclick="saveKW()" disabled/>
+		<input type="hidden" name="changed" value="keywordss"/>
+	    <input type="hidden" name="paperID" value="<%= paper.getId() %>"/>
+		</form>
+		<input type="button" name= "addKeywords" id="addKeywords"  value="add keyword" onclick="addKeywords()" disabled/><br>
+		<input type="button" name= "editKeywords" id="editKeywords"  value="edit" onclick="editKeywords(${fn:escapeXml(i)})"/><br>
 		</fieldset>
 		</div>
 		
-		
+		<div id="topicDiv">
 		<fieldset>
- 		<legend>Paper Topic:</legend>
+ 		<legend><label>Paper Topic:</label></legend>
 <!-- 		<label for="topic">Paper Topic</label> -->
 	
     	<form action="/editpaper" method="post">
@@ -161,11 +186,12 @@
 	    </form>
 	    <input type="button" name= "editTopic" id="editTopic"  value="edit" onclick="editTopic()"/><br>
 	    </fieldset>
+	    </div>
 	    
 	    
-	    <div>
+	    <div id="authorsDiv">
 	    <fieldset>
- 		<legend>Authors:</legend>
+ 		<legend><label>Authors:</label></legend>
 <!-- 	    <label for="Author">Authors:</label> -->
 	    <table>
 		<%
@@ -194,24 +220,27 @@
 		</table>
 		</fieldset>
 		</div>
+		
+	<div id="deleteDiv">
+	<%if( paper.getOwner().equals( Key.create( r3cloud.User.class, user.getNickname() ) ) ){%>
 	
-	<%
-	if(paper.getOwner().equals(Key.create(r3cloud.User.class, user.getNickname()))){
-	%>
 		<form action="/editpaper" method="post">
 		<input Onclick="return ConfirmDelete();" type="submit" name="actiondelete" value="Delete">
 		<input type="hidden" name="changed" value="delete"/>
-	    <input type="hidden" name="paperID" value="<%= paper.getId() %>"/>
+	    <input type="hidden" name="paperID" value="<%= paper.getId()%>"/>
 		
 		</form>
 	<%
 	}
  }
 	%>
-
+	</div>
+	
 </body>
 
 <SCRIPT language="javascript">
+
+var keywordsNumberScript = 0;
 function editTitle(){
 	var elem = document.getElementById('saveTitle');
 	elem.disabled = false;
@@ -220,6 +249,64 @@ function editTitle(){
 	var elem = document.getElementById('title');
 	elem.disabled = false;
 	
+};
+function editKeywords(keywordsNumber){
+	keywordsNumberScript = keywordsNumber;
+	for(i=0; i<keywordsNumber; i++){
+		var elem = document.getElementById('keyword'+i);
+		elem.disabled = false;
+		elem = document.getElementById("remove"+i);
+		elem.disabled = false;
+		elem.type="button";
+		
+	}
+	var elem2 = document.getElementById('saveKW');
+	elem2.disabled = false;
+	
+	var elem3 = document.getElementById('addKeywords');
+	elem3.disabled = false;
+	
+	var elem3 = document.getElementById('editKeywords');
+	elem3.disabled=true;
+
+	
+	
+}
+function addKeywords(){
+
+	//Create an input type dynamically.
+ 	keywordsNumberScript = keywordsNumberScript +1;
+     var element = document.createElement("input");
+     element.setAttribute("type", "text");
+     element.setAttribute("value", "keyword");
+    element.setAttribute("name", "keyword");
+     element.setAttribute("id", "keyword"+keywordsNumberScript);
+     
+     var element2 = document.createElement("input");
+     element2.setAttribute("type", "button");
+     element2.setAttribute("value", "X");
+    element2.setAttribute("name", "removeKW");
+     element2.setAttribute("id", "remove"+keywordsNumberScript);
+     element2.setAttribute("OnClick","removeKeywords("+keywordsNumberScript+")");
+    
+  
+    
+ 
+      var addKeyWords = document.getElementById("keywordsSpan");
+ 
+     addKeyWords.appendChild(element);
+     addKeyWords.appendChild(element2);
+};
+
+function removeKeywords(kwID){
+	keywordsNumberScript = keywordsNumberScript -1;
+	var KeyWordsSpan = document.getElementById("keywordsSpan");
+	
+	var elem = document.getElementById("keyword"+kwID);
+	alert(elem.id);
+	var elem2 = document.getElementById("remove"+kwID);
+	KeyWordsSpan.removeChild(elem);
+	KeyWordsSpan.removeChild(elem2);
 };
 
 function editAbstract(){
@@ -273,6 +360,8 @@ function editTopic() {
     
     parent.appendChild(element2);
 };
+
+
 function ConfirmDelete(){
   var x = confirm("Are you sure you want to delete?");
   if (x)
