@@ -303,7 +303,6 @@ function removeKeywords(kwID){
 	var KeyWordsSpan = document.getElementById("keywordsSpan");
 	
 	var elem = document.getElementById("keyword"+kwID);
-	alert(elem.id);
 	var elem2 = document.getElementById("remove"+kwID);
 	KeyWordsSpan.removeChild(elem);
 	KeyWordsSpan.removeChild(elem2);
