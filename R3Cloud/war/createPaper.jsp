@@ -6,7 +6,7 @@
 <%@ page import="java.util.List"%>
 <%@ page import="com.google.appengine.api.blobstore.BlobstoreServiceFactory"%>
 <%@ page import="com.google.appengine.api.blobstore.BlobstoreService"%>
-<%@ page import="com.google.appengine.api.users.User"%>
+<%-- <%@ page import="com.google.appengine.api.users.User"%> --%>
 <%@ page import="com.google.appengine.api.users.UserService"%>
 <%@ page import="com.google.appengine.api.users.UserServiceFactory"%>
 <%@ page
@@ -18,6 +18,7 @@
 <%@ page import="com.google.appengine.api.datastore.Key"%>
 <%@ page import="com.google.appengine.api.datastore.KeyFactory"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ page import="r3cloud.User" %>
 
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -29,9 +30,10 @@
 
 
 <body>
-	<%
-		UserService userService = UserServiceFactory.getUserService();
-		User user = userService.getCurrentUser();
+	<% 
+		
+		
+		r3cloud.User user = ((r3cloud.User)session.getAttribute("user"));
 		BlobstoreService blobstoreService =  BlobstoreServiceFactory.getBlobstoreService();
 		
 
@@ -39,17 +41,22 @@
 	%>
 	<p>
 		Hello! <a
-			href="<%=userService.createLoginURL(request.getRequestURI())%>">Sign
-			in</a>
+			href="/login.jsp">Sign in</a>
 	</p>
+<!-- 	<p> -->
+<!-- 		Hello! <a -->
+<%-- 			href="<%=userService.createLoginURL(request.getRequestURI())%>">Sign --%>
+<!-- 			in</a> -->
+<!-- 	</p> -->
 	<%
 		} else {
 
 			pageContext.setAttribute("user", user);
+			
 	%>
 	<p>
-		Hello, ${fn:escapeXml(user.nickname)}! (You can <a
-			href="<%=userService.createLogoutURL(request.getRequestURI())%>">sign
+		Hello, ${fn:escapeXml(user.username)}! (You can <a
+			href="">sign
 			out</a>.)
 	</p>
 
@@ -115,10 +122,11 @@
 		<div>
 		<fieldset>
 	    <legend><label for="addAuthor">Add Author</label></legend>
-		<INPUT type="button" value="Add Author" onclick="add2()"/><br>
+		<INPUT type="button" value="Add Author" onclick="add2()"/>
   		<span id="addAuthors" name="authors" ></span><br>
   		</fieldset>
 		</div>
+		<input type="hidden" name="userKey" value='<%=((r3cloud.User)session.getAttribute("user")).getUsername()%>' />
 		<input type="submit" value="Create paper" />
 	</form> 
 	
@@ -166,40 +174,40 @@ function add() {
  
 }
 function add2() {
-	 
+	
     //Create an input type dynamically.
     
-    var title = document.createElement("input");
-    title.setAttribute("type", "text");
-    title.setAttribute("value", "Author's title");
-    title.setAttribute("name", "AuthorTitle");
+    var author = document.createElement("input");
+    author.setAttribute("type", "text");
+    author.setAttribute("value", "Author's account");
+    author.setAttribute("name", "AuthorAccount");
     
-    var fName = document.createElement("input");
-    fName.setAttribute("type", "text");
-    fName.setAttribute("value", "Author's first name");
-    fName.setAttribute("name", "AuthorFirstName");
+//     var fName = document.createElement("input");
+//     fName.setAttribute("type", "text");
+//     fName.setAttribute("value", "Author's first name");
+//     fName.setAttribute("name", "AuthorFirstName");
     
-    var lName = document.createElement("input");
-    lName.setAttribute("type", "text");
-    lName.setAttribute("value", "Author's last name");
-    lName.setAttribute("name", "AuthorLastName");
+//     var lName = document.createElement("input");
+//     lName.setAttribute("type", "text");
+//     lName.setAttribute("value", "Author's last name");
+//     lName.setAttribute("name", "AuthorLastName");
     
-    var affiliation = document.createElement("input");
-    affiliation.setAttribute("type", "text");
-    affiliation.setAttribute("value", "Author's Affiliation");
-    affiliation.setAttribute("name", "Affiliation");
+//     var affiliation = document.createElement("input");
+//     affiliation.setAttribute("type", "text");
+//     affiliation.setAttribute("value", "Author's Affiliation");
+//     affiliation.setAttribute("name", "Affiliation");
  	
-    var lineBreak = document.createElement ("br");
- 
+    //var lineBreak = document.createElement ("br");
+
     var addAuthors = document.getElementById("addAuthors");
- 
+    
     //Append the element in page (in span).
-    addAuthors.appendChild(title);
-    addAuthors.appendChild(fName);
-    addAuthors.appendChild(lName);
-    addAuthors.appendChild(affiliation);
+    addAuthors.appendChild(author);
+//     addAuthors.appendChild(fName);
+//     addAuthors.appendChild(lName);
+//     addAuthors.appendChild(affiliation);
     addAuthors.appendChild(lineBreak);
-   
+ 
     
  
 }

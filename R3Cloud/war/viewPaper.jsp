@@ -29,16 +29,17 @@
 <body>
 
 	<%
-		UserService userService = UserServiceFactory.getUserService();
-		User user = userService.getCurrentUser();
+		//UserService userService = UserServiceFactory.getUserService();
+		//User user = userService.getCurrentUser();
 		/* BlobstoreService blobstoreService =  BlobstoreServiceFactory.getBlobstoreService(); */
+		r3cloud.User user = ((r3cloud.User)session.getAttribute("user"));
 		
 
 		if (user == null) {
 	%>
 	<p>
 		Hello! <a
-			href="<%=userService.createLoginURL(request.getRequestURI())%>">Sign
+			href="/login.jsp">Sign
 			in</a>
 	</p>
 	<%
@@ -50,10 +51,11 @@
 			Paper paper = Paper.loadPaperById(idL);
 			
 			pageContext.setAttribute("paper", paper);
+			
 	%>
 	<p>
-		Hello, ${fn:escapeXml(user.nickname)}! (You can <a
-			href="<%=userService.createLogoutURL(request.getRequestURI())%>">sign
+		Hello, ${fn:escapeXml(user.username)}! (You can <a
+			href="">sign
 			out</a>.)
 	</p>
 	
@@ -63,13 +65,17 @@
   		<form action="/editpaper" method="post">
   		<span id="titleDiv">
 	    <!-- <label for="titleLabel">Paper title</label> -->
+	    <%if( paper.getOwner().equals( Key.create( r3cloud.User.class, user.getUsername() ) ) ){%>
 	    <input type="submit" name= "saveTitle" id="saveTitle" value="save" onclick="saveTitle()" disabled/>&nbsp;&nbsp;&nbsp;&nbsp;
+	    <%}%>
 	    <input type="text" name="title" id="title" value="<%= paper.getTitle() %>" disabled>&nbsp;&nbsp;&nbsp;&nbsp;
 	    <input type="hidden" name="changed" value="title"/>
 	    <input type="hidden" name="paperID" value="<%= paper.getId() %>"/>
 	    </span>
 	    </form>
+	    <%if( paper.getOwner().equals( Key.create( r3cloud.User.class, user.getUsername() ) ) ){%>
 	    <input type="button" name= "editTitle" id="editTitle"  value="edit" onclick="editTitle()"/><br>
+	    <%} %>
 	    </fieldset>
 	    </div>
 		
@@ -79,14 +85,17 @@
   		<form action="/editpaper" method="post">
   		<span id="abstractDiv">
 <!-- 	    <label for="abstractLabel">Paper abstract</label><br>  -->
+		<%if( paper.getOwner().equals( Key.create( r3cloud.User.class, user.getUsername() ) ) ){%>
 		<input type="submit" name= "saveAbstract" id="saveAbstract" value="save" disabled/>&nbsp;&nbsp;&nbsp;&nbsp;
+		<%} %>
 	    <textarea id="abstract" name="abstract" rows="10" cols="70" disabled> <%= paper.getAbstractPaper() %></textarea>
 	    	    <input type="hidden" name="changed" value="abstract"/>
 	    <input type="hidden" name="paperID" value="<%= paper.getId() %>"/>
 	    </span>
 	    </form>
+	    <%if( paper.getOwner().equals( Key.create( r3cloud.User.class, user.getUsername() ) ) ){%>
 	    <input type="button" name= "editAbstract" id="editAbstract"  value="edit" onclick="editAbstract()"/><br>
-	    
+	    <%} %>
 	    </fieldset>
 	    </div>
 	    
@@ -161,12 +170,16 @@
 		%>
 		</span>
 		</br>
+		<%if( paper.getOwner().equals( Key.create( r3cloud.User.class, user.getUsername() ) ) ){%>
 		<input type="submit" name= "saveKW" id="saveKW" value="save" onclick="saveKW()" disabled/>
+		<%}%>
 		<input type="hidden" name="changed" value="keywordss"/>
 	    <input type="hidden" name="paperID" value="<%= paper.getId() %>"/>
 		</form>
+		<%if( paper.getOwner().equals( Key.create( r3cloud.User.class, user.getUsername() ) ) ){%>
 		<input type="button" name= "addKeywords" id="addKeywords"  value="add keyword" onclick="addKeywords()" disabled/><br>
 		<input type="button" name= "editKeywords" id="editKeywords"  value="edit" onclick="editKeywords(${fn:escapeXml(i)})"/><br>
+		<%}%>
 		</fieldset>
 		</div>
 		
@@ -177,14 +190,18 @@
 	
     	<form action="/editpaper" method="post">
     	<span id="topicDiv">
+    	<%if( paper.getOwner().equals( Key.create( r3cloud.User.class, user.getUsername() ) ) ){%>
     	<input type="submit" name= "saveTopic" id="saveTopic" value="save" onclick="saveTopic()" disabled/>&nbsp;&nbsp;&nbsp;&nbsp;
+    	<%}%>
 	    <input type="text" id= "topicValue" name="topic" value="<%= paper.getTopic() %>" disabled>&nbsp;&nbsp;&nbsp;&nbsp;
 	    
 	    <input type="hidden" name="changed" value="topic"/>
 	    <input type="hidden" name="paperID" value="<%= paper.getId() %>"/>
 	    </span>
 	    </form>
+	    <%if( paper.getOwner().equals( Key.create( r3cloud.User.class, user.getUsername() ) ) ){%>
 	    <input type="button" name= "editTopic" id="editTopic"  value="edit" onclick="editTopic()"/><br>
+	    <%} %>
 	    </fieldset>
 	    </div>
 	    
@@ -193,7 +210,7 @@
 	    <fieldset>
  		<legend><label>Authors:</label></legend>
 <!-- 	    <label for="Author">Authors:</label> -->
-	    <table>
+	    
 		<%
 		List<Key<Author>> authorKeys = paper.getAuthors();
 	    List<Author> authors = Author.getAuthorsByKey(authorKeys);
@@ -204,25 +221,64 @@
 		<%
 		}
 		else{
-			for(Author author : authors){
-				pageContext.setAttribute("author", author);
-				
-			%>	<tr>
-				<td><input type="text" name="authorTitle" value="<%= author.getTitle()%>" disabled></td>
-				<td><input type="text" name="authorFName" value="<%= author.getFirstName()%>" disabled></td>
-				<td><input type="text" name="authorLName" value="<%= author.getLastName()%>" disabled></td>
-				<td><input type="text" name="authorAff" value="<%= author.getAffiliation()%>" disabled></td>
-				</tr>
+			%>
+			<form action="/editpaper" method="post">
+			<span id='authorsSpan'>
 			<% 
+			int j=0;
+			for(Author author : authors){
+				String title = "author"+j+"title";
+				String fName = "author"+j+"FName";
+				String lName = "author"+j+"LName";
+				String aff = "author"+j+"Aff";
+				String removeAuthor = "removeAuthor"+j;
+				String authorAccount = "authorAccount"+j;
+				pageContext.setAttribute("j", j);
+		
+				pageContext.setAttribute("author", author);
+				pageContext.setAttribute("title", title);
+				pageContext.setAttribute("fName", fName);
+				pageContext.setAttribute("lName", lName);
+				pageContext.setAttribute("aff", aff);
+				pageContext.setAttribute("removeAuthor", removeAuthor);
+				pageContext.setAttribute("authorAccount", authorAccount);
+				j++;
+			
+			%>	
+				
+				<input type="text" name="authorAccount" id= "${fn:escapeXml(authorAccount)}" value="<%= author.getAccount()%>" disabled>
+				<input type="hidden" name="removeAuthor" id="${fn:escapeXml(removeAuthor)}" value="X" onclick="removeAuthors(${fn:escapeXml(j)})" disabled>
+				<input type="text" name="authorTitle" id= "${fn:escapeXml(title)}" value="<%= author.getTitle()%>" disabled>
+				<input type="text" name="authorFName" id= "${fn:escapeXml(fName)}" value="<%= author.getFirstName()%>" disabled>
+			    <input type="text" name="authorLName" id= "${fn:escapeXml(lName)}" value="<%= author.getLastName()%>" disabled>
+			    <input type="text" name="authorAff" id= "${fn:escapeXml(aff)}" value="<%= author.getAffiliation()%>" disabled>
+				</br>
+				
+	
+			<%
 			}
+		
+			pageContext.setAttribute("numberOfAuthors", j);
+			%>
+			</span>
+			<%
 		}
 		%>
-		</table>
+		<%if( paper.getOwner().equals( Key.create( r3cloud.User.class, user.getUsername() ) ) ){%>
+		<input type="submit" name= "saveAuthors" id="saveAuthors" value="save" onclick="saveAuthors()" disabled/>
+		<%}%>
+		<input type="hidden" name="changed" value="authors"/>
+	    <input type="hidden" name="paperID" value="<%= paper.getId() %>"/>
+		</form>
+		<%if( paper.getOwner().equals( Key.create( r3cloud.User.class, user.getUsername() ) ) ){%>
+		<input type="button" name= "addAuthors" id="addAuthors"  value="add author" onclick="addAuthors()" disabled/><br>
+		<input type="button" name= "editAuthors" id="editAuthors"  value="edit" onclick="editAuthors(${fn:escapeXml(numberOfAuthors)})"/><br>
+		<%}%>
 		</fieldset>
 		</div>
 		
 	<div id="deleteDiv">
-	<%if( paper.getOwner().equals( Key.create( r3cloud.User.class, user.getNickname() ) ) ){%>
+	<%if( paper.getOwner().equals( Key.create( r3cloud.User.class, user.getUsername() ) ) ){%>
 	
 		<form action="/editpaper" method="post">
 		<input Onclick="return ConfirmDelete();" type="submit" name="actiondelete" value="Delete">
@@ -241,6 +297,8 @@
 <SCRIPT language="javascript">
 
 var keywordsNumberScript = 0;
+var authorsNumberScript = 0;
+
 function editTitle(){
 	var elem = document.getElementById('saveTitle');
 	elem.disabled = false;
@@ -250,6 +308,86 @@ function editTitle(){
 	elem.disabled = false;
 	
 };
+
+function editAuthors(authorsNumber){
+
+	authorsNumberScript = authorsNumber;
+	
+	for(i=0; i<authorsNumber; i++){
+		
+		var elem1 = document.getElementById("author"+i+"title");
+		var parent1 = elem1.parentNode;
+		parent1.removeChild(elem1);
+		
+		var elem2 = document.getElementById("author"+i+"FName");
+		var parent2 = elem2.parentNode;
+		parent2.removeChild(elem2);
+		
+		var elem3 = document.getElementById("author"+i+"LName");
+		var parent3 = elem3.parentNode;
+		parent3.removeChild(elem3);
+		
+		var elem4 = document.getElementById("author"+i+"Aff");
+		var parent4 = elem4.parentNode;
+		parent4.removeChild(elem4);
+		
+		var elem5 = document.getElementById('authorAccount'+i);
+		elem5.disabled = false;
+		
+		var elem6 = document.getElementById('removeAuthor'+i);
+		elem6.disabled = false;
+		elem6.type="button";
+		
+		var elem7 = document.getElementById('addAuthors');
+		elem7.disabled = false;
+		
+		var elem7 = document.getElementById('saveAuthors');
+		elem7.disabled = false;
+		
+	}
+};
+
+function addAuthors(){
+	authorsNumberScript = authorsNumberScript+1;
+	
+	
+	var author = document.createElement("input");
+    author.setAttribute("type", "text");
+    author.setAttribute("value", "Author's account");
+    author.setAttribute("name", "authorAccount");
+    author.setAttribute("id", "authorAccount"+authorsNumberScript);
+    
+    var element2 = document.createElement("input");
+    element2.setAttribute("type", "button");
+    element2.setAttribute("value", "X");
+    element2.setAttribute("name", "removeAuthor");
+    element2.setAttribute("id", "removeAuthor"+authorsNumberScript);
+    element2.setAttribute("OnClick","removeAuthors("+authorsNumberScript+")");
+   
+ 
+    var lineBreak = document.createElement ("br");
+
+     var authorsSpan = document.getElementById("authorsSpan");
+
+     authorsSpan.appendChild(author);
+     authorsSpan.appendChild(element2);
+     authorsSpan.appendChild(lineBreak);
+     
+};
+
+
+
+function removeAuthors(author){
+	authorsNumberScript = authorsNumberScript -1;
+	var authorsSpan = document.getElementById("authorsSpan");
+	
+	var elem = document.getElementById("removeAuthor"+author);
+	var elem2 = document.getElementById("authorAccount"+author);
+	
+	authorsSpan.removeChild(elem);
+	authorsSpan.removeChild(elem2);
+};
+
 function editKeywords(keywordsNumber){
 	keywordsNumberScript = keywordsNumber;
 	for(i=0; i<keywordsNumber; i++){
@@ -268,10 +406,7 @@ function editKeywords(keywordsNumber){
 	
 	var elem3 = document.getElementById('editKeywords');
 	elem3.disabled=true;
-
-	
-	
-}
+};
 function addKeywords(){
 
 	//Create an input type dynamically.
@@ -318,6 +453,8 @@ function editAbstract(){
 	
 };
 
+
+
 function editTopic() {
 	
 	var elem = document.getElementById('saveTopic');
@@ -325,7 +462,7 @@ function editTopic() {
 	var elem = document.getElementById('editTopic');
 	elem.disabled = true;
 	var elem2 = document.getElementById('topicValue');
-	var parent = elem2.parentNode
+	var parent = elem2.parentNode;
 	parent.removeChild(elem2);
 	
 
@@ -359,7 +496,6 @@ function editTopic() {
     
     parent.appendChild(element2);
 };
-
 
 function ConfirmDelete(){
   var x = confirm("Are you sure you want to delete?");

@@ -14,6 +14,15 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
      </servlet>
      
 	<servlet>
+        <servlet-name>RegisterAuthorServlet</servlet-name>
+        <servlet-class>r3cloud.AuthorServlet</servlet-class>
+     </servlet>
+     <servlet>
+        <servlet-name>LoginServlet</servlet-name>
+        <servlet-class>r3cloud.LoginServlet</servlet-class>
+     </servlet>
+     
+	<servlet>
         <servlet-name>createPaper</servlet-name>
         <servlet-class>r3cloud.PaperServlet</servlet-class>
      </servlet>
@@ -55,6 +64,15 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	<servlet-mapping>
 		<servlet-name>R3Cloud</servlet-name>
 		<url-pattern>/r3cloud</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+	     <servlet-name>RegisterAuthorServlet</servlet-name>
+		<url-pattern>/registerAuthor</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+	     <servlet-name>LoginServlet</servlet-name>
+		<url-pattern>/login</url-pattern>
 	</servlet-mapping>
 	
 	

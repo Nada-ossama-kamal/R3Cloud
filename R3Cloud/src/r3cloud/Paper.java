@@ -11,6 +11,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import com.google.api.server.spi.config.ApiResourceProperty;
+import com.google.api.server.spi.config.ApiTransformer;
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.datastore.QueryResultIterable;
 import com.googlecode.objectify.Key;
@@ -191,6 +193,20 @@ public class Paper {
 		return paper;
 	}
 	
+	public static Paper setAuthorsByID(Long paperID, ArrayList<Key<Author>> authors) {
+		Paper paper = Paper.loadPaperById(paperID);
+		paper.setAuthors(authors);
+		ofy().save().entity(paper).now();
+		
+		//com.google.appengine.api.datastore.Entity paperEntity = ofy().toEntity(paper);
+		//paperEntity.setProperty("authors",authors);
+		//ofy().save().entities(paperEntity);
+		
+		return paper;
+	}
+	
+	
+	
 
 	public void setKeywords(String[] keywords) {
 		this.keywords = keywords;
@@ -281,6 +297,8 @@ public class Paper {
 		}
 		return topics;
 	}
+
+	
 	
 	
 	

@@ -47,28 +47,28 @@ public class PaperServlet extends HttpServlet{
 		BlobKey blobKey = blobs.get("myFile");
 		System.out.print(blobKey+">>>>>>>>>>>>>>>>>>>>");
 	
-        r3cloud.User r3User = r3cloud.User.createUser(googleUser.getUserId(), googleUser.getNickname());
+        //r3cloud.User r3User = r3cloud.User.createUser(googleUser.getUserId(), googleUser.getNickname());
         String title = req.getParameter("title");
-        System.out.println(title+"Title");
         String abstractPaper = req.getParameter("abstract");
         //final Part filePart = request.getPart("file");
-        Key<r3cloud.User> userKey = Key.create(r3cloud.User.class, r3User.firstName);
+        //Key<r3cloud.User> userKey = Key.create(r3cloud.User.class, r3User.firstName);
         boolean isText = (req.getParameter("text").equals("true"));
         //boolean isText = false;
         String url = req.getParameter("insertedURL");
         String[] keywords = req.getParameterValues("keyword");
         
-        for(int i = 0; i<keywords.length; i++){
-        	System.out.println(keywords[i]);
-        }
+    
         
         String topic = req.getParameter("topic");
-        String[] authorTitle = req.getParameterValues("AuthorTitle");
-        String[] fNames = req.getParameterValues("AuthorFirstName");
-        String[] lName = req.getParameterValues("AuthorLastName");
-        String[] affiliation = req.getParameterValues("Affiliation");
-        ArrayList<Key<Author>> authors = PaperServlet.createAuthors(authorTitle, fNames, lName, affiliation);
-        System.out.println("WASLAA");
+        String username = req.getParameter("userKey");
+       	Key<r3cloud.User> userKey = r3cloud.User.getUserKey(username);
+       	String[] authorsAccounts = req.getParameterValues("AuthorAccount");
+        //String[] authorTitle = req.getParameterValues("AuthorTitle");
+        //String[] fNames = req.getParameterValues("AuthorFirstName");
+        //String[] lName = req.getParameterValues("AuthorLastName");
+        //String[] affiliation = req.getParameterValues("Affiliation");
+        ArrayList<Key<Author>> authors = Author.getAuthorsKeysByAccount(authorsAccounts);
+        System.out.println(authors);
         
        Paper paper = Paper.createPaper(title,isText, url, blobKey, abstractPaper, userKey, topic, keywords, authors);
        
@@ -79,15 +79,15 @@ public class PaperServlet extends HttpServlet{
     }
 	
 	
-	private static ArrayList<Key<Author>> createAuthors(String[] authorTitle, String[] fNames, String[] lName, String[] affiliation){
-		ArrayList<Key<Author>> authors= new ArrayList<Key<Author>>();
-		
-		for(int i=0; i< authorTitle.length; i++){
-			Author author = Author.createAuthor(fNames[i], lName[i], authorTitle[i], affiliation[i]);
-			authors.add(author.getKey());
-		}
-		
-		return authors;
-	}
+//	private static ArrayList<Key<Author>> createAuthors(String[] authorTitle, String[] fNames, String[] lName, String[] affiliation, Key<r3cloud.User> userKey){
+//		ArrayList<Key<Author>> authors= new ArrayList<Key<Author>>();
+//		
+//		for(int i=0; i< authorTitle.length; i++){
+//			Author author = Author.createAuthor(fNames[i], lName[i], authorTitle[i], affiliation[i], userKey);
+//			authors.add(author.getKey());
+//		}
+//		
+//		return authors;
+//	}
 
 }

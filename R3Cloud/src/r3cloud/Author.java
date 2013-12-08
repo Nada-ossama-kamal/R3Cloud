@@ -10,6 +10,7 @@ import java.util.Map;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.Index;
 
 @Entity
 public class Author {
@@ -19,23 +20,26 @@ public class Author {
 	String lastName;
 	String title;
 	String affiliation;
+	@Index
+	Key<User> account;
 
 	public Author() {
 
 	}
 
 	public Author(String firstName, String lastName, String title,
-			String affiliation) {
+			String affiliation, Key<User> account) {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.title = title;
 		this.affiliation = affiliation;
+		this.account = account;
 	}
 
 	public static Author createAuthor(String firstName, String lastName, String title,
-			String affiliation) {
+			String affiliation, Key<User> account) {
 
-		Author author = new Author(firstName, lastName, title, affiliation);
+		Author author = new Author(firstName, lastName, title, affiliation, account);
 		ofy().save().entity(author).now();
 		return author;
 	}
@@ -87,6 +91,39 @@ public class Author {
 		return authors;
 		
 	}
+	
+	public static Author getAuthorByUserName(String userName){
+		Key<User> authorUserKey = r3cloud.User.getUserKey(userName);
+		Author author = ofy().load().type(Author.class).filter("acount",authorUserKey).first().get();
+		return author;
+	}
+	
+	public static Author getAuthorByUserAccount(Key<User> account){
+	
+		Author author = ofy().load().type(Author.class).filter("account",account).first().get();
+		return author;
+	}
+	
+	public static ArrayList<Key<Author>> getAuthorsKeysByAccount(String[] authorsAccounts){
+		ArrayList<Key<Author>> authorsKeys = new ArrayList<Key<Author>>();
+		
+		for(String account: authorsAccounts){
+			Author author = Author.getAuthorByUserAccount(Key.create (r3cloud.User.class, account));
+			if(author != null){
+			Key<Author> authorKey = author.getKey();
+			authorsKeys.add(authorKey);
+			}
+		}
+		
+		return authorsKeys;
+		
+	}
+	
+	public String getAccount(){
+		return (this.account).getName();
+	}
+	
+	
 	
 
 
