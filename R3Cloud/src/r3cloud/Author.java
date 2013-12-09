@@ -123,6 +123,33 @@ public class Author {
 		return (this.account).getName();
 	}
 	
+	public static List<Author> getAllAuthors(){
+		List<Author> allAuthors = ofy().load().type(Author.class).list();
+		return allAuthors;
+	}
+	
+	public static List<String> getAllAuthorsAccounts(){
+		List<Author> allAuthors = getAllAuthors();
+		
+		List<String> accounts = new ArrayList<String>();
+		for(Author author : allAuthors){
+			accounts.add(author.getAccount());
+		}
+		
+		return accounts;
+	}
+	
+	public static String getAllAuthorsAccountsString(){
+		List<Author> allAuthors = getAllAuthors();
+		
+		String accounts = "";
+		for(Author author : allAuthors){
+			accounts = accounts + author.getAccount() +"#";
+		}
+		
+		return accounts;
+	}
+	
 	
 	
 

@@ -94,6 +94,7 @@ public class Paper {
 		ofy().delete().type(Paper.class).id(id).now();
 	}
 	
+	
 
 	
 	/*
@@ -147,25 +148,28 @@ public class Paper {
 	
 	public static Paper setTopicByID(Long id, String topic) {
 		Paper paper = Paper.loadPaperById(id);
-		
-		
-		ofy().load().type(Paper.class).id(id).getKey();
 		paper.setTopic(topic);
-		com.google.appengine.api.datastore.Entity paperEntity = ofy().toEntity(paper);
-		paperEntity.setProperty("topic",topic);
-		ofy().save().entities(paperEntity);
+		DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+		Date now = Calendar.getInstance().getTime();
+		String date = df.format(now);
+		paper.setLastUpdatedDate(date);
+		//com.google.appengine.api.datastore.Entity paperEntity = ofy().toEntity(paper);
+		//paperEntity.setProperty("topic",topic);
+		ofy().save().entity(paper).now();
 		
 		return paper;
 	}
 	public static Paper setTitleByID(Long id, String title) {
 		Paper paper = Paper.loadPaperById(id);
-		
-		
-		ofy().load().type(Paper.class).id(id).getKey();
 		paper.setTitle(title);
-		com.google.appengine.api.datastore.Entity paperEntity = ofy().toEntity(paper);
-		paperEntity.setProperty("title",title);
-		ofy().save().entities(paperEntity);
+		DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+		Date now = Calendar.getInstance().getTime();
+		String date = df.format(now);
+		paper.setLastUpdatedDate(date);
+		ofy().save().entity(paper).now();
+		//com.google.appengine.api.datastore.Entity paperEntity = ofy().toEntity(paper);
+		//paperEntity.setProperty("title",title);
+		
 		
 		return paper;
 	}
@@ -174,9 +178,14 @@ public class Paper {
 		Paper paper = Paper.loadPaperById(id);
 		ofy().load().type(Paper.class).id(id).getKey();
 		paper.setAbstractPaper(abs);
-		com.google.appengine.api.datastore.Entity paperEntity = ofy().toEntity(paper);
-		paperEntity.setProperty("abstractPaper",abs);
-		ofy().save().entities(paperEntity);
+		DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+		Date now = Calendar.getInstance().getTime();
+		String date = df.format(now);
+		paper.setLastUpdatedDate(date);
+		ofy().save().entity(paper).now();
+		//com.google.appengine.api.datastore.Entity paperEntity = ofy().toEntity(paper);
+		//paperEntity.setProperty("abstractPaper",abs);
+		//ofy().save().entities(paperEntity);
 		
 		return paper;
 	}
@@ -185,10 +194,15 @@ public class Paper {
 		Paper paper = Paper.loadPaperById(id);
 		ofy().load().type(Paper.class).id(id).getKey();
 		paper.setKeywords(keywordsPaper);
-		com.google.appengine.api.datastore.Entity paperEntity = ofy().toEntity(paper);
-		ArrayList<String> keywordsArray = new ArrayList<String>(Arrays.asList(keywordsPaper));
-		paperEntity.setProperty("keywords",keywordsArray);
-		ofy().save().entities(paperEntity);
+		DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+		Date now = Calendar.getInstance().getTime();
+		String date = df.format(now);
+		paper.setLastUpdatedDate(date);
+		ofy().save().entity(paper).now();
+		//com.google.appengine.api.datastore.Entity paperEntity = ofy().toEntity(paper);
+		//ArrayList<String> keywordsArray = new ArrayList<String>(Arrays.asList(keywordsPaper));
+		//paperEntity.setProperty("keywords",keywordsArray);
+		//ofy().save().entities(paperEntity);
 		
 		return paper;
 	}
@@ -196,6 +210,10 @@ public class Paper {
 	public static Paper setAuthorsByID(Long paperID, ArrayList<Key<Author>> authors) {
 		Paper paper = Paper.loadPaperById(paperID);
 		paper.setAuthors(authors);
+		DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+		Date now = Calendar.getInstance().getTime();
+		String date = df.format(now);
+		paper.setLastUpdatedDate(date);
 		ofy().save().entity(paper).now();
 		
 		//com.google.appengine.api.datastore.Entity paperEntity = ofy().toEntity(paper);

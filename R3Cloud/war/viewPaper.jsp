@@ -59,6 +59,16 @@
 			out</a>.)
 	</p>
 	
+	 <p>
+	    Created by: <%=paper.getOwner().getName()%>
+	</p>
+	<p>
+		At: ${fn:escapeXml(paper.date)}
+    </p>
+    <p>
+		Last modified at: ${fn:escapeXml(paper.lastUpdatedDate)}
+	</p>
+	
 		<div id="titleDiv">
 		<fieldset>
   		<legend><label>Paper title:</label></legend>
