@@ -39,7 +39,6 @@ public class Paper {
 	String url;
 	@Index
 	BlobKey content;
-	@Index
 	String abstractPaper;
 	@Index
 	Key<User> owner;

@@ -72,7 +72,7 @@
 		<div id="titleDiv">
 		<fieldset>
   		<legend><label>Paper title:</label></legend>
-  		<form action="/editpaper" method="post">
+  		<form action="/editpaper" method="post" onsubmit="return validateTitle();">
   		<span id="titleDiv">
 	    <!-- <label for="titleLabel">Paper title</label> -->
 	    <%if( paper.getOwner().equals( Key.create( r3cloud.User.class, user.getUsername() ) ) ){%>
@@ -92,7 +92,7 @@
 		<div id="abstractDiv">
 		<fieldset>
   		<legend><label>Paper abstract:</label></legend>
-  		<form action="/editpaper" method="post">
+  		<form action="/editpaper" method="post" onsubmit="return validateAbstract();">
   		<span id="abstractDiv">
 <!-- 	    <label for="abstractLabel">Paper abstract</label><br>  -->
 		<%if( paper.getOwner().equals( Key.create( r3cloud.User.class, user.getUsername() ) ) ){%>
@@ -121,7 +121,7 @@
 		%>
 		
 		<form action="/serve" method="get">
-      	<input type="submit" value="View paper" />
+      	<input type="submit" value="View Paper" />
 		<input type="hidden" name="blob-key" value="${fn:escapeXml(paper)}"/>
    	    </form>
 	    </div>
@@ -131,12 +131,17 @@
 		}else{
 			%>
 			<label for="Url">Paper url</label>
-		  	<input type="text" name="insertedURL" value="<%= paper.getUrl() %>" disabled><br>
+			<a href="<%= paper.getUrl() %>">Go to paper</a>
+<%-- 		  	<input type="text" name="insertedURL" value="<%= paper.getUrl() %>" disabled><br> --%>
 		<%
 		}
 		%>
  	 </div>
  	 
+ 	 <%if( paper.getOwner().equals( Key.create( r3cloud.User.class, user.getUsername() ) ) ){%>
+<!-- 	    <input type="button" name= "editContent" id="editContent"  value="edit" onclick="editContent()"/><br> -->
+	    <%} %>
+	   
  	 </fieldset>
  	 </div>
  	 
@@ -145,19 +150,19 @@
  		<fieldset>
  		<legend><label>Keywords Label:</label></legend>
 		<%
-		String[] keywordz = paper.getKeywords();
-		if(keywordz.length == 0){
+		String[] keywords = paper.getKeywords();
+		if(keywords.length == 0){
 		%>
 			<p><i>No keywords were specified</i></p>
 		<%
 		}
 		else{
 			%>
-			<form action="/editpaper" method="post">
+			<form action="/editpaper" method="post" onsubmit="return validateKeyword();">
 			<span id="keywordsSpan">
 			<%
 			int i=0;
-			for(String keyword : keywordz){
+			for(String keyword : keywords){
 				//pageContext.setAttribute("keyword", keyword);
 				String kwString = "keyword"+i;
 				pageContext.setAttribute("kwString", kwString);
@@ -232,7 +237,7 @@
 		}
 		else{
 			%>
-			<form action="/editpaper" method="post">
+			<form action="/editpaper" method="post" onsubmit="return validateAuthor();">
 			<span id='authorsSpan'>
 			<% 
 			int j=0;
@@ -306,8 +311,37 @@
 
 <SCRIPT language="javascript">
 
-var keywordsNumberScript = 0;
-var authorsNumberScript = 0;
+
+var nextKeywordID = 0;
+var validKeyWordsIDs = new Array();
+
+var nextAuthorID = 0;
+var validAuthorssIDs = new Array();
+
+Array.prototype.contains=function(other){
+	
+	for (k=0;k<this.length;k++){
+			if(this[k] == other){
+				return true;
+			}
+	  }
+	  return false;
+	};
+
+Array.prototype.remove=function(other){
+	alert("remove func "+other);
+	alert(this);
+	var newArray = new Array();
+	var newArrayIndex = 0;
+	for (k=0;k<this.length;k++){
+		alert("remove func "+other+"  "+this[k]);
+			if(this[k] != other){
+				newArray[newArrayIndex] = this[k];
+				newArrayIndex++;
+			}
+	  }
+	  return newArray;
+};
 
 function editTitle(){
 	var elem = document.getElementById('saveTitle');
@@ -321,7 +355,8 @@ function editTitle(){
 
 function editAuthors(authorsNumber){
 
-	authorsNumberScript = authorsNumber;
+	
+	nextAuthorID = authorsNumber;
 	
 	for(i=0; i<authorsNumber; i++){
 		
@@ -354,26 +389,25 @@ function editAuthors(authorsNumber){
 		var elem7 = document.getElementById('saveAuthors');
 		elem7.disabled = false;
 		
+		validAuthorssIDs[i]=i;
+		
 	}
 };
 
 function addAuthors(){
-	authorsNumberScript = authorsNumberScript+1;
-	
-	
 	var author = document.createElement("input");
     author.setAttribute("type", "text");
     author.setAttribute("value", "Author's account");
     author.setAttribute("name", "authorAccount");
-    author.setAttribute("id", "authorAccount"+authorsNumberScript);
+    author.setAttribute("id", "authorAccount"+nextKeywordID);
     
     var element2 = document.createElement("input");
     element2.setAttribute("type", "button");
     element2.setAttribute("value", "X");
     element2.setAttribute("name", "removeAuthor");
-    element2.setAttribute("id", "removeAuthor"+authorsNumberScript);
-    element2.setAttribute("OnClick","removeAuthors("+authorsNumberScript+")");
-   
+    element2.setAttribute("id", "removeAuthor"+nextKeywordID);
+    element2.setAttribute("OnClick","removeAuthors("+nextKeywordID+")");
+   alert("authorAccount"+nextKeywordID);
  
     var lineBreak = document.createElement ("br");
 
@@ -383,14 +417,19 @@ function addAuthors(){
      authorsSpan.appendChild(element2);
      authorsSpan.appendChild(lineBreak);
      
+    
+     validKeyWordsIDs[validKeyWordsIDs.length] = nextKeywordID;
+     nextKeywordID = nextKeywordID +1;
+     
 };
 
 
 
 function removeAuthors(author){
-	authorsNumberScript = authorsNumberScript -1;
-	var authorsSpan = document.getElementById("authorsSpan");
+	validKeyWordsIDs = validKeyWordsIDs.remove(author);
 	
+	var authorsSpan = document.getElementById("authorsSpan");
+	alert("removeAuthor"+author);
 	var elem = document.getElementById("removeAuthor"+author);
 	var elem2 = document.getElementById("authorAccount"+author);
 	
@@ -399,13 +438,17 @@ function removeAuthors(author){
 };
 
 function editKeywords(keywordsNumber){
-	keywordsNumberScript = keywordsNumber;
+	
+	nextKeywordID = keywordsNumber;
+	
 	for(i=0; i<keywordsNumber; i++){
 		var elem = document.getElementById('keyword'+i);
 		elem.disabled = false;
 		elem = document.getElementById("remove"+i);
 		elem.disabled = false;
 		elem.type="button";
+		
+		validKeyWordsIDs[i]=i;
 		
 	}
 	var elem2 = document.getElementById('saveKW');
@@ -416,23 +459,24 @@ function editKeywords(keywordsNumber){
 	
 	var elem3 = document.getElementById('editKeywords');
 	elem3.disabled=true;
+	alert("validKeyWordsIDs: "+validKeyWordsIDs.length);
 };
+
 function addKeywords(){
 
 	//Create an input type dynamically.
- 	keywordsNumberScript = keywordsNumberScript +1;
      var element = document.createElement("input");
      element.setAttribute("type", "text");
      element.setAttribute("value", "keyword");
     element.setAttribute("name", "keyword");
-     element.setAttribute("id", "keyword"+keywordsNumberScript);
-     
+     element.setAttribute("id", "keyword"+nextKeywordID);
+     alert(element.id);
      var element2 = document.createElement("input");
      element2.setAttribute("type", "button");
      element2.setAttribute("value", "X");
     element2.setAttribute("name", "removeKW");
-     element2.setAttribute("id", "remove"+keywordsNumberScript);
-     element2.setAttribute("OnClick","removeKeywords("+keywordsNumberScript+")");
+     element2.setAttribute("id", "remove"+nextKeywordID);
+     element2.setAttribute("OnClick","removeKeywords("+nextKeywordID+")");
     
   
     
@@ -441,16 +485,47 @@ function addKeywords(){
  
      addKeyWords.appendChild(element);
      addKeyWords.appendChild(element2);
+     alert("Adding: "+nextKeywordID);
+    
+     validKeyWordsIDs[validKeyWordsIDs.length] = nextKeywordID;
+     nextKeywordID = nextKeywordID +1;
+     
+     alert("validKeyWordsIDs: "+validKeyWordsIDs.length);
 };
 
 function removeKeywords(kwID){
-	keywordsNumberScript = keywordsNumberScript -1;
+	validKeyWordsIDs = validKeyWordsIDs.remove(kwID);
+	alert("remove"+kwID);
+	 alert("validKeyWordsIDs: "+validKeyWordsIDs.length);
+	 
 	var KeyWordsSpan = document.getElementById("keywordsSpan");
 	
 	var elem = document.getElementById("keyword"+kwID);
 	var elem2 = document.getElementById("remove"+kwID);
 	KeyWordsSpan.removeChild(elem);
 	KeyWordsSpan.removeChild(elem2);
+};
+
+function validateKeyword(){
+	
+	if(validKeyWordsIDs.length < 1){
+		alert("Please enter at least one keyword !!");
+		 return false;
+	}else{
+		
+		alert("#valid KWs  "+validKeyWordsIDs.length);
+		for(i=0; i< validKeyWordsIDs.length; i++){
+			alert("keyword"+i);
+			  var kw = document.getElementById("keyword"+validKeyWordsIDs[i]);
+			  alert(validKeyWordsIDs[i]+"  "+kw.value);
+			  if(kw.value == ""){
+				  var num = i+1;
+				  alert("Please enter a value for keyword number "+num);
+				  kw.focus();
+				  return false;
+			  }
+		  }
+	}
 };
 
 function editAbstract(){
@@ -513,7 +588,50 @@ function ConfirmDelete(){
       return true;
   else
     return false;
-}
+};
+
+function validateTitle(){
+	if( document.getElementById('title').value==""){
+      	alert("The Title field is left blank");
+      	document.getElementById('title').focus();
+      	return false;
+    }
+};
+
+function validateAbstract(){
+	if( document.getElementById('abstract').value==""){
+      	alert("The Abstract field is left blank");
+      	document.getElementById('abstract').focus();
+      	return false;
+    }
+};
+	
+
+function validateAuthor(){
+	alert("da5al");
+	if(authorsNumberScript<1){
+		alert("Please enter at least one Author account !!");
+		 return false;
+	}else{
+		
+		var k=0;
+		alert(authorsNumberScript);
+		for(k=0; k<authorsNumberScript; k++){
+			alert("authorAccount"+k);
+			  var author = document.getElementById("authorAccount"+k);
+			  alert(authorsNumberScript+"  "+author.value);
+			  if(author.value == ""){
+				  var num = k+1;
+				  alert("Please enter a value for author account number "+num);
+				  author.focus();
+				  return false;
+			  }
+		  }
+	}
+
+};
+	
+
 
 </SCRIPT>
 </html>
