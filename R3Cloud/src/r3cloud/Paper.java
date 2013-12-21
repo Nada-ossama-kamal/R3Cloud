@@ -259,7 +259,39 @@ public class Paper {
 		return papers;
 		
 	}
-	
+public static  List<Paper> Search(String searchTerm){
+		
+		QueryResultIterable<Paper> allPapers = ofy().load().type(Paper.class)
+				.order("title").iterable();
+		
+		List<Paper> listPapersWithSearchTerm = new ArrayList<Paper>();
+
+		
+
+		
+		for (Paper paper : allPapers) {
+			
+			if (paper.title.toLowerCase().trim().contains(searchTerm.toLowerCase())) {
+				
+				listPapersWithSearchTerm.add(paper);
+				continue;
+			}
+			
+			for(String keyword : paper.keywords){
+				if(keyword.toLowerCase().trim().contains(searchTerm.toLowerCase())){
+					
+					listPapersWithSearchTerm.add(paper);
+					break;
+				}
+				
+			}
+				
+
+		}
+		
+		return listPapersWithSearchTerm;
+
+	}
 	public static Paper loadPaperById(Long id){
 		
 		Paper paper = ofy().load().type(Paper.class).id(id).get();

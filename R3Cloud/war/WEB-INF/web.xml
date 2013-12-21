@@ -31,7 +31,10 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 		<servlet-name>Serve</servlet-name>
         <servlet-class>r3cloud.Serve</servlet-class>
      </servlet>
-     
+     <servlet>
+        <servlet-name>AutoCompleteServlet</servlet-name>
+        <servlet-class>r3cloud.AutoCompleteServlet</servlet-class>
+     </servlet>
 	<servlet>
         <servlet-name>upload</servlet-name>
         <servlet-class>r3cloud.upload</servlet-class>
@@ -55,6 +58,11 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	    <servlet-name>Serve</servlet-name>
 		<url-pattern>/serve</url-pattern>
 	</servlet-mapping>	
+	
+	  <servlet-mapping> 
+	    <servlet-name>AutoCompleteServlet</servlet-name>
+		<url-pattern>/autoSearch</url-pattern>
+	</servlet-mapping>
 	
 	<servlet-mapping>
 		 <servlet-name>upload</servlet-name>

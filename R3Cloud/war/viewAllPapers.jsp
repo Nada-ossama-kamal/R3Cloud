@@ -22,8 +22,25 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-
+<link rel="stylesheet"
+	href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 <style type="text/css">
+/*search box CSS*/
+
+.ui-autocomplete-category {
+	font-weight: bold;
+	padding: .1em .2em;
+	margin: .4em 0 .2em;
+	line-height: 1.5;
+	font-size: .8em;
+}
+
+.ui-menu-item {
+	font-size: .7em;
+}
+/*Paging CSS*/
 
 .pg-normal { 
 color: #000000; 
@@ -126,7 +143,40 @@ text-align:center;
 vertical-align:top; 
 }
 </style>
+<script>
+	$.widget("custom.catcomplete", $.ui.autocomplete, {
+		_renderMenu : function(ul, items) {
+			var self = this, currentCategory = "";
+			$.each(items, function(index, item) {
+				if (item.category != currentCategory) {
+					ul.append("<li class='ui-autocomplete-category'>"
+							+ item.category + "</li>");
+					currentCategory = item.category;
+				}
+				self._renderItemData(ul, item);
+			});
+		}
+	});
+</script>
+<script>
+	function showData(value) {
+		var autoData;
+		$.ajax({
+			url : "autoSearch?name=" + value,
+			type : "GET",
+			success : function(data) {
+				console.log(data);
+				autoData = data;
 
+				$("#search").catcomplete({
+					source : autoData,
+				});
+
+			}
+		});
+
+	};
+</script>
 <script type="text/javascript">
 
 function Pager(tableName, itemsPerPage) {
@@ -247,7 +297,7 @@ element.innerHTML = pagerHtml;
 
 </script>
 
-<title>View all paper</title>
+<title>View all papers</title>
 </head>
 <body>
 	<%
@@ -294,6 +344,17 @@ element.innerHTML = pagerHtml;
 	       
 	        
 	        <div>
+	        
+	        <%
+	        String searchTerm =request.getParameter("search");
+			pageContext.setAttribute("search", searchTerm);
+			%>
+			<form action="viewAllPapers.jsp" method="get" autocomplete="off">
+			<input type="search" id="search" name="search"
+			onkeyup="showData(this.value);" value="${fn:escapeXml(search)}" /> 
+			<input type="submit" value="Search"/> 
+			</form>
+			
 	        <fieldset>
 	        <legend><label>Topics:</label></legend>
 	        <a href="/viewAllPapers.jsp?topic=biology">Biology</a>
@@ -303,6 +364,7 @@ element.innerHTML = pagerHtml;
 	        <a href="/viewAllPapers.jsp?topic=cs">Computer Science</a>
 	        <a href="/viewAllPapers.jsp">All Papers</a>
 	        </fieldset>
+	        
 	        </div>
 
 		<div>
@@ -317,11 +379,23 @@ element.innerHTML = pagerHtml;
 			<fieldset>
 	 		<%
 			List<Paper> papers;
+	 		
 			if(topic.equals("All Papers")){
+				
+				if(searchTerm==null){
 				papers = Paper.loadAll();
+				
 				%>
 				<legend><label>All Papers: </label></legend>
-				<%
+				<% } else {
+					if(!searchTerm.isEmpty())
+					papers= Paper.Search(searchTerm);
+					else
+					papers = new ArrayList<Paper>();
+				}
+				%><legend><label>Search results (<%papers.size(); %>) </label></legend>
+				
+				<% 
 			}else{
 				papers = Paper.loadTopic(topic);
 				pageContext.setAttribute("topic", topic);
