@@ -264,6 +264,16 @@ function validateForm(){
          	   alert("The url field is left blank");
          	   document.createPaperForm.insertedURL.focus();
          	   return false;
+     }else if(document.getElementById('insertedURL').value!=""){
+    			var urlregex = new RegExp(
+    	        "^(http:\/\/www.|https:\/\/www.|ftp:\/\/www.){1}([0-9A-Za-z]+\.)");	
+    		      var valid= urlregex.test(document.getElementById('insertedURL').value);
+    		      if(!valid){
+    		    	  alert("Please insert a valid url value: \n http:\/\/www.(\/path) \n https:\/\/www.(\/path) \n ftp:\/\/www.(\/path)");
+    		    	  document.createPaperForm.insertedURL.focus();
+    		    	  return false;
+    		      }
+         		
       }else{
     	  for(i=0; i<keywords; i++){
     		  var kw = document.getElementById("keyword"+i);

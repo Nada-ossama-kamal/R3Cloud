@@ -222,6 +222,18 @@ public class Paper {
 		return paper;
 	}
 	
+	public static Paper setContentByID(Long paperID, boolean text, String url, BlobKey content){
+		Paper paper = Paper.loadPaperById(paperID);
+		paper.setText(text);
+		if(text)
+			paper.setContent(content);
+		else
+			paper.setUrl(url);
+		
+		ofy().save().entity(paper).now();
+		return paper;
+		
+	}
 	
 	
 

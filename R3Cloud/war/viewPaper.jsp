@@ -138,8 +138,18 @@
 		%>
  	 </div>
  	 
+ 	    
+   	    <form action="<%= blobstoreService.createUploadUrl("/editpaper") %>" method="post" enctype="multipart/form-data" name="editContentForm" onsubmit="return validateContent();">
+		<span id="editContentSpan" style="visibility: hidden;">
+
+   	     </span>
+   	    <input type="hidden" name="changed" value="content"/>
+    	<input type="hidden" name="paperID" value="<%= paper.getId() %>"/>
+   	    </form>
+   	  
+ 	 
  	 <%if( paper.getOwner().equals( Key.create( r3cloud.User.class, user.getUsername() ) ) ){%>
-<!-- 	    <input type="button" name= "editContent" id="editContent"  value="edit" onclick="editContent()"/><br> -->
+	    <input type="button" name= "editContent" id="editContent"  value="edit" onclick="editContent()"/><br>
 	    <%} %>
 	   
  	 </fieldset>
@@ -341,6 +351,117 @@ Array.prototype.remove=function(other){
 			}
 	  }
 	  return newArray;
+};
+
+function textSelected(){
+	var text = document.getElementById("myFile");
+	var url = document.getElementById("insertedURL");
+	text.disabled = false;
+	url.disabled = true;
+	
+};
+function urlSelected(){
+	var text = document.getElementById("myFile");
+	var url = document.getElementById("insertedURL");
+	text.disabled = true;
+	url.disabled = false;
+};
+
+function editContent(){
+	var span = document.getElementById("editContentSpan");
+		span.style.visibility="visible";
+	
+	 var element1 = document.createElement("label");
+	    element1.setAttribute("for", "url");
+	    element1.innerHTML = "Insert paper url";
+	   
+	
+	    
+	 var element2 = document.createElement("input");
+	    element2.setAttribute("type", "radio");
+	    element2.setAttribute("value", "false");
+	    element2.setAttribute("name", "text");
+	    element2.setAttribute("id", "url");
+	    element2.setAttribute("OnClick","urlSelected()");
+	  
+	 var element3 = document.createElement("label");
+	    element3.setAttribute("for", "text");
+	    element3.innerHTML = "Upload paper text";
+	    
+	    var element4 = document.createElement("input");
+	    element4.setAttribute("type", "radio");
+	    element4.setAttribute("value", "true");
+	    element4.setAttribute("name", "text");
+	    element4.setAttribute("id", "text");
+	    element4.setAttribute("OnClick","textSelected()");
+	    element4.checked="true";
+	    
+	    
+	    var element5 = document.createElement("label");
+	    element5.setAttribute("for", "insertUrl");
+	    element5.innerHTML = "Paper url";
+	  
+	    
+	    var element6 = document.createElement("input");
+	    element6.setAttribute("type", "text");
+	    element6.setAttribute("name", "insertedURL");
+	    element6.setAttribute("id", "insertedURL");
+	    element6.disabled="true";
+	    
+	    
+	    
+	    var element7 = document.createElement("label");
+	    element7.setAttribute("for", "chooseFile");
+	    element7.innerHTML = "Specify file(s) to upload";
+	    
+	    var element8 = document.createElement("input");
+	    element8.setAttribute("type", "file");
+	    element8.setAttribute("name", "myFile");
+	    element8.setAttribute("id", "myFile");
+	    
+	    var element9 = document.createElement("input");
+	    element9.setAttribute("type", "submit");
+	    element9.setAttribute("value", "save");
+	    element9.setAttribute("name", "saveContent");
+	    element9.setAttribute("id", "saveContent");
+	    element9.setAttribute("OnClick","saveContent()");
+
+	    
+	    
+	   
+	    span.appendChild(element1);
+	    span.appendChild(element2);
+	    span.appendChild(document.createElement ("br"));
+	    span.appendChild(element3);
+	    span.appendChild(element4);
+	    span.appendChild(document.createElement ("br"));
+	    span.appendChild(element5);
+	    span.appendChild(element6);
+	    span.appendChild(document.createElement ("br"));
+	    span.appendChild(element7);
+	    span.appendChild(element8);
+	    span.appendChild(document.createElement ("br"));
+	    span.appendChild(element9);
+	    span.appendChild(document.createElement ("br"));
+	    
+//       <label for="url">Insert paper url</label>	
+//   	<input type="radio" name="text" id="url" value="false" onchange="urlSelected()"><br>
+//   	<label for="text">Upload paper text</label>
+//   	<input type="radio" name="text" id="text" value="true" onchange="textSelected()" checked><br>
+  	
+//   	<label for="insertUrl">Paper url</label>
+//   	<input type="text" name="insertedURL" id="insertedURL"  disabled><br> 
+  	
+//   	<label for="chooseFile">Specify file(s) to upload</label>
+// 	<input type="file" name="myFile" id= "myFile"><br>
+	
+    
+    
+	var elem = document.getElementById('saveContent');
+	elem.disabled = false;
+	var elem = document.getElementById('editContent');
+	elem.disabled = true;
+	
 };
 
 function editTitle(){
@@ -632,6 +753,27 @@ function validateAuthor(){
 };
 	
 
+function validateContent(){
+	if(document.getElementById('text').checked && (document.getElementById('myFile').files[0]==null || document.getElementById('myFile').files[0].size == 0)){
+     	alert("No file or a file of 0 size was selected");
+     	//document.createPaperForm.myFile.focus();
+     	return false;
+	}else if(document.getElementById('url').checked && document.getElementById('insertedURL').value==""){
+ 	   alert("The url field is left blank");
+ 	  document.getElementById('insertedURL').focus();
+ 	   return false;
+	}else if(document.getElementById('insertedURL').value!=""){
+		var urlregex = new RegExp(
+        "^(http:\/\/www.|https:\/\/www.|ftp:\/\/www.){1}([0-9A-Za-z]+\.)");	
+	      var valid= urlregex.test(document.getElementById('insertedURL').value);
+	      if(!valid){
+	    	  alert("Please insert a valid url value: \n http:\/\/www.(\/path) \n https:\/\/www.(\/path) \n ftp:\/\/www.(\/path)");
+	    	  document.getElementById('insertedURL').focus();
+	    	  return false;
+	      }
+	}
 
+	
+}
 </SCRIPT>
 </html>

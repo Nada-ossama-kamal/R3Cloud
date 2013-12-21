@@ -4,11 +4,15 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Map;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.appengine.api.blobstore.BlobKey;
+import com.google.appengine.api.blobstore.BlobstoreService;
+import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.googlecode.objectify.Key;
 
 public class EditPaperServlet extends HttpServlet{
@@ -37,6 +41,14 @@ public class EditPaperServlet extends HttpServlet{
 			String[] authorsAccounts = req.getParameterValues("authorAccount");
 			ArrayList<Key<Author>> authorsKeys = Author.getAuthorsKeysByAccount(authorsAccounts);
 			Paper.setAuthorsByID(paperID, authorsKeys);
+		}else if(changedItem.equalsIgnoreCase("content")){
+			BlobstoreService blobstoreService =  BlobstoreServiceFactory.getBlobstoreService();
+			Map<String, BlobKey> blobs = blobstoreService.getUploadedBlobs(req);
+			BlobKey blobKey = blobs.get("myFile");
+			System.out.print(blobKey+">>>>>>>>>>>>>>>>>>>>");
+			boolean isText = (req.getParameter("text").equals("true"));
+	        String url = req.getParameter("insertedURL");
+	        Paper.setContentByID(paperID, isText, url, blobKey);
 		}
 		
 		
