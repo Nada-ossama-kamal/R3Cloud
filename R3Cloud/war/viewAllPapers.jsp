@@ -144,6 +144,7 @@ vertical-align:top;
 }
 </style>
 <script>
+<!--Script responsible for categorization of the papers and keywords coming from the ajax request for the autocomplete -->
 	$.widget("custom.catcomplete", $.ui.autocomplete, {
 		_renderMenu : function(ul, items) {
 			var self = this, currentCategory = "";
@@ -159,6 +160,7 @@ vertical-align:top;
 	});
 </script>
 <script>
+<!--Script responsible for the ajax used to populate the search box autocomplete -->
 	function showData(value) {
 		var autoData;
 		$.ajax({
@@ -381,19 +383,26 @@ element.innerHTML = pagerHtml;
 			List<Paper> papers;
 	 		
 			if(topic.equals("All Papers")){
-				
+				//checking if the search term is empty and topic set to all, then displaying all papers
 				if(searchTerm==null){
 				papers = Paper.loadAll();
 				
 				%>
 				<legend><label>All Papers: </label></legend>
-				<% } else {
+				<% } 
+					else {
+				//checking if the search term is not empty and topic set to all, then displaying all papers containing the search term in their titles or their keywords
+						
 					if(!searchTerm.isEmpty())
 					papers= Paper.Search(searchTerm);
 					else
 					papers = new ArrayList<Paper>();
+					//displaying the number of search results returns
+					pageContext.setAttribute("numberOfSearchResults", papers.size());
+					%>
+					<legend>Search results  <span style="color:grey;margin-left:1em;margin-right:0.5em; font-size:0.8em;">About ${fn:escapeXml(numberOfSearchResults)} results</span></legend>
+					
 				}
-				%><legend><label>Search results (<%papers.size(); %>) </label></legend>
 				
 				<% 
 			}else{
@@ -450,8 +459,8 @@ element.innerHTML = pagerHtml;
 
 
 <script type="text/javascript">
-<!--
-var pager = new Pager('tablepaging', 5);
+
+var pager = new Pager('tablepaging', 5);<!-- change number here to change number of items per page-->
 pager.init();
 pager.showPageNav('pager', 'pageNavPosition');
 pager.showPage(1);
