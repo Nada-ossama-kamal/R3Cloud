@@ -56,10 +56,9 @@ $('.star').rating({ callback: function(value, link){
 	});}
 	
 } });
-if("<%=Rating.getByPaperAndUser(Long.parseLong(request.getParameter("id")), ((r3cloud.User)session.getAttribute("user")).getUsername())%>"!="null")
-{
-	$('.star').rating('select',"<%=Math.round(Rating.getByPaperAndUser(Long.parseLong(request.getParameter("id")), ((r3cloud.User)session.getAttribute("user")).getUsername()).getScore()*2)/2.0f+""%>");
-}
+
+$('.star').rating('select',"<%=Math.round((Rating.getByPaperAndUser(Long.parseLong(request.getParameter("id")), ((r3cloud.User)session.getAttribute("user")).getUsername())!=null)? Rating.getByPaperAndUser(Long.parseLong(request.getParameter("id")), ((r3cloud.User)session.getAttribute("user")).getUsername()).getScore()*2:0)/2.0f+""%>");
+
 
 firstRun=false;
 }); 
