@@ -474,7 +474,7 @@ pager.init();
 pager.showPageNav('pager', 'pageNavPosition');
 pager.showPage(1);
 </script>
-
+<!--  
 <SCRIPT language="javascript">
 function loadPaperTopic(topic){
 	var elem = document.getElementById('saveTitle');
@@ -487,5 +487,5 @@ function loadPaperTopic(topic){
 	
 };
 
-</SCRIPT>
+</SCRIPT>-->
 </html>

@@ -11,6 +11,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ page import="r3cloud.Paper" %>
 <%@ page import="r3cloud.Author" %>
+<%@ page import="r3cloud.Rating" %>
 
 
 
@@ -23,6 +24,47 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>View Paper</title>
+
+
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<script src="Js/jquery.rating.js"></script>
+<script src="Js/jquery.MetaData.js"></script>
+<script src="Js/jquery.form.js"></script>
+<link rel="stylesheet" type="text/css" href="stylesheets/jquery.rating.css">
+<script>
+
+$(function(){
+	var firstRun=true;
+
+var str="<%=Paper.loadPaperById(Long.parseLong(request.getParameter("id"))).getUrl()+"" %>";
+//alert(str);
+$('.star').rating({ callback: function(value, link){ 
+	if(firstRun==false){
+	$.ajax({
+		url : "rating?username="+ "<%=((r3cloud.User)session.getAttribute("user")).getUsername()%>"+"&paperId="+<%=request.getParameter("id")%>+"&rating="+value,
+		type : "GET",
+		success : function(data) {
+			
+			var split=data.split("&"); 
+			document.getElementById("votes").innerHTML=split[1];
+			document.getElementById("ActualRating").innerHTML=split[0];
+			
+		
+
+		}
+	});}
+	
+} });
+if("<%=Rating.getByPaperAndUser(Long.parseLong(request.getParameter("id")), ((r3cloud.User)session.getAttribute("user")).getUsername())%>"!="null")
+{
+	$('.star').rating('select',"<%=Math.round(Rating.getByPaperAndUser(Long.parseLong(request.getParameter("id")), ((r3cloud.User)session.getAttribute("user")).getUsername()).getScore()*2)/2.0f+""%>");
+}
+
+firstRun=false;
+}); 
+</script>
+
 </head>
 <body>
 
@@ -145,7 +187,7 @@
     <td nowrap></td>
   </tr>
  <tr>
-  	<td colspan="5">
+  	<td >
     <div id="textDiv">
  		<%
 		
@@ -168,6 +210,23 @@
 		}
 		%>
  	 </div>
+    </td>
+    <td>
+    
+    <span id="ratingStars">
+        <input name="starRating" type="radio" value="0.5" class="star {split:2}"/>
+		<input name="starRating" type="radio" value="1.0" class="star  {split:2}"/> 
+		<input name="starRating" type="radio" value="1.5" class="star  {split:2}"/>
+		<input name="starRating" type="radio" value="2.0" class="star {split:2}"/>
+		<input name="starRating" type="radio" value="2.5" class="star  {split:2}"/> 
+		<input name="starRating" type="radio" value="3.0" class="star {split:2}"/>
+		<input name="starRating" type="radio" value="3.5" class="star {split:2}"/> 
+		<input name="starRating" type="radio" value="4.0" class="star  {split:2}"/> 
+		<input name="starRating" type="radio" value="4.5" class="star {split:2}"/>
+		<input name="starRating" type="radio" value="5.0"class="star  {split:2}"/> 
+		</span>
+		<p id="ratingScore">Rating: <strong id="ActualRating"><%=Paper.loadPaperById(Long.parseLong(request.getParameter("id"))).getRating()%></strong> / 5 stars - <strong id="votes">	<%=Paper.getVotesNoById(Long.parseLong(request.getParameter("id")))%></strong> vote(s).</p>
+	
     </td>
   
   </tr>

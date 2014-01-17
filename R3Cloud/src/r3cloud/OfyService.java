@@ -10,7 +10,7 @@ public class OfyService {
         factory().register(r3cloud.Paper.class);
         factory().register(r3cloud.Author.class);
 		factory().register(r3cloud.User.class);
-		
+		factory().register(r3cloud.Rating.class);
     }
 
     public static Objectify ofy() {

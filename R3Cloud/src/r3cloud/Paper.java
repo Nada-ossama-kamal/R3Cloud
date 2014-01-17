@@ -49,6 +49,8 @@ public class Paper {
 	@Index
 	List<Key<Author>> authors;
 	String lastUpdatedDate;
+	double rating;
+	
 
 	public Paper() {
 
@@ -75,6 +77,8 @@ public class Paper {
 		this.keywords = keywords;
 		this.authors = authors;
 		this.lastUpdatedDate = date;
+		this.rating = 0.0;
+		
 	}
 
 	public static Paper createPaper(String title, boolean text, String url,
@@ -256,6 +260,11 @@ public class Paper {
 	
 	public static List<Paper> loadAll(){
 	    List<Paper> papers = ofy().load().type(Paper.class).order("title").list();
+	 //   System.out.println(papers.size());
+//	for(Paper paper:papers){
+//		paper.rating=0.0;
+//		ofy().save().entity(paper).now();
+//	}
 		return papers;
 		
 	}
@@ -292,9 +301,88 @@ public static  List<Paper> Search(String searchTerm){
 		return listPapersWithSearchTerm;
 
 	}
+	/**Adds or updates rating for paper based on the user input
+	 * 
+	 * @param paperID
+	 * @param username
+	 * @param score
+	 */
+    public static void addRatingById(Long paperID, String username, double score){ 
+    	ofy().clear();
+    	Paper paper = Paper.loadPaperById(paperID);
+    	double oldUserRating=0.0;
+    	
+    	if(r3cloud.Rating.getByPaperAndUser(paperID, username)==null){
+    		Rating rating=	Rating.createRating(User.getUserKey(username), paper.getKey(), score);
+    		ofy().save().entity(rating).now();
+    		ofy().clear();
+//    		System.out.println("score sent"+score);
+//    		System.out.println("rating size"+r3cloud.Rating.getByPaper(paperID).size());
+//    		System.out.println(paper.rating);
+    		paper.rating=(paper.rating*(r3cloud.Rating.getByPaper(paperID).size()-1)+score)/r3cloud.Rating.getByPaper(paperID).size();
+//    		System.out.println(paper.rating);
+    	}else{
+    		Rating rating=r3cloud.Rating.getByPaperAndUser(paperID, username);
+    		oldUserRating=rating.getScore();
+    		rating.setScore(score);
+    		ofy().save().entity(rating).now();
+    		paper.rating=(paper.rating*r3cloud.Rating.getByPaper(paperID).size())-oldUserRating;
+    	
+    		paper.rating=(paper.rating+score)/r3cloud.Rating.getByPaper(paperID).size();
+
+    		
+    	}
+    	
+    	
+    	  
+    	 
+    	  ofy().save().entity(paper).now();
+    }
+    /**Deletes rating for paper based on the user input
+	 * 
+	 * @param paperID
+	 * @param username
+	 * 
+	 */
+    public static void deleteRatingById(Long paperID, String username){ 
+    	ofy().clear();
+    	Paper paper = Paper.loadPaperById(paperID);
+    	
+    	double oldUserRating=0.0;
+    	if(r3cloud.Rating.getByPaperAndUser(paperID, username)==null){
+    		
+    	}else{
+    		Rating rating=r3cloud.Rating.getByPaperAndUser(paperID, username);
+    		oldUserRating=rating.getScore();
+    		ofy().clear();
+    		paper.rating=(paper.rating*r3cloud.Rating.getByPaper(paperID).size())-oldUserRating;
+    		
+    		ofy().delete().entity(rating).now();
+    		ofy().clear();
+    		if(r3cloud.Rating.getByPaper(paperID).size()!=0)
+    		paper.rating=(paper.rating)/r3cloud.Rating.getByPaper(paperID).size();
+    		else
+    			paper.rating=0.0;
+    		
+    	}
+    	
+    	 
+    	  
+    	  
+    	  ofy().save().entity(paper).now();
+    }
+    
+    public static int getVotesNoById(Long paperId){
+    	return r3cloud.Rating.getByPaper(paperId).size();
+    	
+    }
+    public double getRating(){
+    	return rating;
+    }
+
 	public static Paper loadPaperById(Long id){
 		
-		Paper paper = ofy().load().type(Paper.class).id(id).get();
+		Paper paper = ofy().cache(false).load().type(Paper.class).id(id).get();
 		return paper;
 	}
 	public Long getId() {
@@ -336,6 +424,8 @@ public static  List<Paper> Search(String searchTerm){
 	public List<Key<Author>> getAuthors() {
 		return authors;
 	}
+	
+
 
 	public String getLastUpdatedDate() {
 		return lastUpdatedDate;
