@@ -149,6 +149,10 @@ public class Author {
 		
 		return accounts;
 	}
+
+	public void setAccount(Key<User> account) {
+		this.account = account;
+	}
 	
 	
 	

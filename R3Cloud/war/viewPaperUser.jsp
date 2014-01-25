@@ -11,7 +11,10 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ page import="r3cloud.Paper" %>
 <%@ page import="r3cloud.Author" %>
+<%@ page import="r3cloud.Review" %>
 <%@ page import="r3cloud.Rating" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.Date" %>
 
 
 
@@ -24,8 +27,6 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>View Paper</title>
-
-
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 <script src="Js/jquery.rating.js"></script>
@@ -57,13 +58,11 @@ $('.star').rating({ callback: function(value, link){
 	
 } });
 
+
 $('.star').rating('select',"<%=Math.round((Rating.getByPaperAndUser(Long.parseLong(request.getParameter("id")), ((r3cloud.User)session.getAttribute("user")).getUsername())!=null)? Rating.getByPaperAndUser(Long.parseLong(request.getParameter("id")), ((r3cloud.User)session.getAttribute("user")).getUsername()).getScore()*2:0)/2.0f+""%>");
-
-
 firstRun=false;
 }); 
 </script>
-
 </head>
 <body>
 
@@ -186,7 +185,7 @@ firstRun=false;
     <td nowrap></td>
   </tr>
  <tr>
-  	<td >
+  	<td>
     <div id="textDiv">
  		<%
 		
@@ -210,7 +209,7 @@ firstRun=false;
 		%>
  	 </div>
     </td>
-    <td>
+	<td>
     
     <span id="ratingStars">
         <input name="starRating" type="radio" value="0.5" class="star {split:2}"/>
@@ -246,6 +245,31 @@ firstRun=false;
 	</table>
   </td>
   </tr>
+  <tr>
+  	<td rowspan="<%= abstractSpan %>" width="5%">&nbsp;&nbsp;</td>
+ 	
+    
+  	<td>
+  		<h2>Paper Review</h2>
+  		<form name="review_form" method="post" action="/submitReview">
+  			<textarea id="review_box" name="text" rows="6" cols="70"></textarea>
+  			<input id="" type="hidden" name="paperKey" value="<%=paper.getId() %>"/>
+  			<input type="hidden" name="userKey" value='<%=((r3cloud.User)session.getAttribute("user")).getUsername()%>' />
+  			<input id="review_submit" type="submit" />
+  		</form>
+  	</td>
+  </tr>
+ 	
+ 		<% List<Review> reviews = Review.getReviewsByPaper(paper.getId());
+ 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+  		for (Review r:reviews){%>
+  			
+			<tr>
+	    	<td bgcolor="#F0F8FF"><%=r.getText()%></td>
+	   		<td bgcolor="#F0F8FF"><%=r.getAuthor().getName()+", "+dateFormat.format(r.getReview_date())%></td>
+	   		</tr>
+	    <%}%>
+	
   
   <%if( paper.getOwner().equals( Key.create( r3cloud.User.class, user.getUsername() ) ) ){%>
   		<tr>

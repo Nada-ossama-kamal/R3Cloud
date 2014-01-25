@@ -73,6 +73,10 @@ public class User implements Serializable{
 		r3cloud.User user = ofy().load().type(r3cloud.User.class).id(username).get();
 		return user;
 	}
+	public static r3cloud.User loadUserByEmail(String email){		
+		r3cloud.User user = ofy().load().type(r3cloud.User.class).id(email).get();
+		return user;
+	}
 	public static r3cloud.User getUserByKey(Key<User> userKey){
 		r3cloud.User user = ofy().load().key(userKey).getValue();
 		return user;
@@ -80,5 +84,10 @@ public class User implements Serializable{
 	public static Key<r3cloud.User> getUserKey(String username){
 		Key<r3cloud.User> userKey = Key.create(r3cloud.User.class, username);
 		return userKey ;
+	}
+	public static r3cloud.User updateProfile(String username, String password, String email, String affiliation, String title){
+		r3cloud.User user = loadUserByUsername(username);
+		
+		return user;
 	}
 }

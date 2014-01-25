@@ -55,28 +55,20 @@
 			pageContext.setAttribute("user", user);
 			
 	%>
-	<p>
-		Hello, ${fn:escapeXml(user.username)}! (You can <a
-			href="">sign
-			out</a>.)
-	</p>
-
-
-
 
 <%-- 	  	<form action="<%= blobstoreService.createUploadUrl("/upload") %>" method="post" enctype="multipart/form-data" name="createPaperForm"> --%>
 		<%String validAuthors = Author.getAllAuthorsAccountsString();
 	      pageContext.setAttribute("validAuthors", validAuthors);
 	     %>
- 	  	<form action="<%= blobstoreService.createUploadUrl("/createPaper") %>" method="post" enctype="multipart/form-data" name="createPaperForm" onsubmit="return validateForm();">
+ 	  	<form class="create-form" action="<%= blobstoreService.createUploadUrl("/createPaper") %>" method="post" enctype="multipart/form-data" name="createPaperForm" onsubmit="return validateForm();">
 <!--  	<form action="/createPaper" method="post" name="createPaperForm"> -->
 
 
 		<div>
-		<fieldset>
+		<fieldset>		
 	    <legend><label for="titleLabel">Paper title</label></legend>
-	    <input type="text" name="title"><br> 
-	    </fieldset>
+	    <input type="text" name="title" /><br> 
+	  	</fieldset>   
 		</div>
 		 
 		 <div>
@@ -233,7 +225,6 @@ function add2() {
     //Append the element in page (in span).
     addAuthors.appendChild(author);
     authors = authors+1;
-    alert(""+authors);
 //     addAuthors.appendChild(fName);
 //     addAuthors.appendChild(lName);
 //     addAuthors.appendChild(affiliation);

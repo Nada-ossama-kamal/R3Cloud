@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -25,7 +26,7 @@ import com.googlecode.objectify.annotation.Load;
 import com.googlecode.objectify.cmd.Query;
 
 @Entity
-public class Paper {
+public class Paper implements Comparable{
 	@Id
 	Long id;
 	@Index
@@ -50,7 +51,6 @@ public class Paper {
 	List<Key<Author>> authors;
 	String lastUpdatedDate;
 	double rating;
-	
 
 	public Paper() {
 
@@ -78,7 +78,6 @@ public class Paper {
 		this.authors = authors;
 		this.lastUpdatedDate = date;
 		this.rating = 0.0;
-		
 	}
 
 	public static Paper createPaper(String title, boolean text, String url,
@@ -260,11 +259,10 @@ public class Paper {
 	
 	public static List<Paper> loadAll(){
 	    List<Paper> papers = ofy().load().type(Paper.class).order("title").list();
-	 //   System.out.println(papers.size());
-//	for(Paper paper:papers){
-//		paper.rating=0.0;
-//		ofy().save().entity(paper).now();
-//	}
+//	    for(Paper paper:papers){
+//			paper.rating=0.0;
+//			ofy().save().entity(paper).now();
+//	    }
 		return papers;
 		
 	}
@@ -301,7 +299,7 @@ public static  List<Paper> Search(String searchTerm){
 		return listPapersWithSearchTerm;
 
 	}
-	/**Adds or updates rating for paper based on the user input
+/**Adds or updates rating for paper based on the user input
 	 * 
 	 * @param paperID
 	 * @param username
@@ -379,10 +377,9 @@ public static  List<Paper> Search(String searchTerm){
     public double getRating(){
     	return rating;
     }
-
 	public static Paper loadPaperById(Long id){
-		
 		Paper paper = ofy().cache(false).load().type(Paper.class).id(id).get();
+
 		return paper;
 	}
 	public Long getId() {
@@ -424,8 +421,6 @@ public static  List<Paper> Search(String searchTerm){
 	public List<Key<Author>> getAuthors() {
 		return authors;
 	}
-	
-
 
 	public String getLastUpdatedDate() {
 		return lastUpdatedDate;
@@ -449,13 +444,43 @@ public static  List<Paper> Search(String searchTerm){
 		return topics;
 	}
 
+	public static Paper getPaperById(long id){
+		r3cloud.Paper paper = ofy().load().type(r3cloud.Paper.class).id(id).get();
+		return paper;
+	}
+	public static r3cloud.Paper getPaperByKey(Key<Paper> paperKey){
+		r3cloud.Paper paper = ofy().load().key(paperKey).getValue();
+		return paper;
+	}
+	public static Key<r3cloud.Paper> getPaperKey(long id){
+		Key<r3cloud.Paper> paperKey = Key.create(r3cloud.Paper.class, id);
+		return paperKey ;
+	}
 	
-	
-	
-	
-	 
+	//list of papers belonging to a user
+	public static List<Paper> getPapersByUser(Key<User> user){
+		
+		List<Paper> papers = ofy().load().type(Paper.class).list();
+		List<Paper> userPapers = new ArrayList<Paper>();
+		for (Paper p : papers)
+			if (p.getOwner().equals(user))
+				userPapers.add(p);
+		Collections.sort(userPapers);
 
-	
+		return userPapers;
+	}
 	
 
+	@Override
+	public int compareTo(Object o) {
+		// TODO Auto-generated method stub
+		Paper p = (Paper) o;
+		//this.get
+		Date thisDate = new Date(this.getDate());
+		Date pDate = new Date(p.getDate());
+		if (thisDate.after(pDate))
+			return -1;
+		else 
+			return 1;
+	}
 }

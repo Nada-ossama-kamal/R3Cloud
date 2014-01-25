@@ -31,7 +31,7 @@ public class LoginServlet extends HttpServlet{
 	    	System.out.println ("no such user");
 	    //Key<r3cloud.User> userKey = Key
 	   
-	    resp.sendRedirect("/");
+	    resp.sendRedirect("/index.jsp");
 	    
 	}
 }

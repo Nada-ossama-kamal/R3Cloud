@@ -6,7 +6,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
 http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 
     <welcome-file-list>
-		<welcome-file>index.html</welcome-file>
+		<welcome-file>index.jsp</welcome-file>
 	</welcome-file-list>
 	<servlet>
         <servlet-name>EditPaperServlet</servlet-name>
@@ -17,14 +17,24 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
         <servlet-name>RegisterAuthorServlet</servlet-name>
         <servlet-class>r3cloud.AuthorServlet</servlet-class>
      </servlet>
+     
      <servlet>
         <servlet-name>LoginServlet</servlet-name>
         <servlet-class>r3cloud.LoginServlet</servlet-class>
      </servlet>
      
+     <servlet>
+        <servlet-name>LogoutServlet</servlet-name>
+        <servlet-class>r3cloud.LogoutServlet</servlet-class>
+     </servlet>
+     
 	<servlet>
         <servlet-name>createPaper</servlet-name>
         <servlet-class>r3cloud.PaperServlet</servlet-class>
+     </servlet>
+     <servlet>
+        <servlet-name>submitReview</servlet-name>
+        <servlet-class>r3cloud.ReviewServlet</servlet-class>
      </servlet>
      
 	<servlet>
@@ -35,7 +45,15 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
         <servlet-name>AutoCompleteServlet</servlet-name>
         <servlet-class>r3cloud.AutoCompleteServlet</servlet-class>
      </servlet>
-      <servlet>
+     <servlet>
+        <servlet-name>UpdateProfileServlet</servlet-name>
+        <servlet-class>r3cloud.UpdateProfileServlet</servlet-class>
+     </servlet>
+     <servlet>
+        <servlet-name>UpdateProfileServlet</servlet-name>
+        <servlet-class>r3cloud.UpdateProfileServlet</servlet-class>
+     </servlet>
+	 <servlet>
         <servlet-name>RatingServlet</servlet-name>
         <servlet-class>r3cloud.RatingServlet</servlet-class>
      </servlet>
@@ -47,16 +65,32 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 		<servlet-name>R3Cloud</servlet-name>
 		<servlet-class>r3cloud.R3CloudServlet</servlet-class>
 	 </servlet>
+	 <servlet>
+		<servlet-name>submitRequest</servlet-name>
+		<servlet-class>r3cloud.RequestServlet</servlet-class>
+	 </servlet>
+	 <servlet>
+		<servlet-name>submitRecommendation</servlet-name>
+		<servlet-class>r3cloud.RecommendServlet</servlet-class>
+	 </servlet>
 	
 	<servlet-mapping>
 	     <servlet-name>EditPaperServlet</servlet-name>
 		<url-pattern>/editpaper</url-pattern>
 	</servlet-mapping>
-	
+	<servlet-mapping>
+	     <servlet-name>submitRecommendation</servlet-name>
+		<url-pattern>/submitRecommendation</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+	     <servlet-name>submitRequest</servlet-name>
+		<url-pattern>/submitRequest</url-pattern>
+	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>createPaper</servlet-name>
 		<url-pattern>/createPaper</url-pattern>
 	</servlet-mapping>	
+	
 	
 	 <servlet-mapping> 
 	    <servlet-name>Serve</servlet-name>
@@ -67,11 +101,10 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	    <servlet-name>AutoCompleteServlet</servlet-name>
 		<url-pattern>/autoSearch</url-pattern>
 	</servlet-mapping>
-	 <servlet-mapping> 
+	<servlet-mapping> 
 	    <servlet-name>RatingServlet</servlet-name>
 		<url-pattern>/rating</url-pattern>
 	</servlet-mapping>
-	
 	<servlet-mapping>
 		 <servlet-name>upload</servlet-name>
 		<url-pattern>/upload</url-pattern>
@@ -91,6 +124,18 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 		<url-pattern>/login</url-pattern>
 	</servlet-mapping>
 	
+	<servlet-mapping>
+	     <servlet-name>LogoutServlet</servlet-name>
+		<url-pattern>/logout</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>submitReview</servlet-name>
+		<url-pattern>/submitReview</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>UpdateProfileServlet</servlet-name>
+		<url-pattern>/updateProfile</url-pattern>
+	</servlet-mapping>
 	
 	<filter>
         <filter-name>ObjectifyFilter</filter-name>

@@ -315,10 +315,7 @@ element.innerHTML = pagerHtml;
 
 		pageContext.setAttribute("user", user);
 	%>
-	<p>
-		Hello, ${fn:escapeXml(user.username)}! (You can <a href="">sign
-			out</a>.)
-	</p>
+
 	<%
 		String topic = request.getParameter("topic");
 		if(topic == null){
@@ -474,7 +471,7 @@ pager.init();
 pager.showPageNav('pager', 'pageNavPosition');
 pager.showPage(1);
 </script>
-<!--  
+<!--
 <SCRIPT language="javascript">
 function loadPaperTopic(topic){
 	var elem = document.getElementById('saveTitle');
@@ -487,5 +484,6 @@ function loadPaperTopic(topic){
 	
 };
 
-</SCRIPT>-->
+</SCRIPT>
+-->
 </html>

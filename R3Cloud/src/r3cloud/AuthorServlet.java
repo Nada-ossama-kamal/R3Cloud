@@ -23,7 +23,7 @@ public class AuthorServlet extends HttpServlet{
 	    String password = req.getParameter("password");
 	    r3cloud.User newUser = r3cloud.User.createUser(username, password, email);
 	
-	    Key<r3cloud.User> userKey = Key.create (r3cloud.User.class, newUser.email);
+	    Key<r3cloud.User> userKey = Key.create (r3cloud.User.class, newUser.username);
 	    
 	    //get information from the form about the new author to be registered
 	    int type = Integer.parseInt(req.getParameter("normal_user"));
